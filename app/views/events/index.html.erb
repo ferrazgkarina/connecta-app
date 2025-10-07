@@ -1,0 +1,7 @@
+<h1>Encontros</h1>
+
+<% if user_signed_in? %>
+  <%= link_to "Criar encontro", new_event_path %>
+<% else %>
+  <%= link_to "Faça login para criar um encontro", new_user_session_path %>
+<% end %>
