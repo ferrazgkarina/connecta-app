@@ -1,0 +1,15 @@
+<h1>Crie o seu perfil</h1>
+
+<%= simple_form_for profile_path do |f| %>
+  <div class="card p-4 shadow-sm rounded-4">
+    <%= f.input :username, label: "Nome de usuário" %>
+    <%= f.input :description, as: :text, label: "Descrição" %>
+    <%= f.input :city, label: "Cidade" %>
+    <%= f.input :interests, label: "Interesses" %>
+    <%= f.input :photo, as: :file, label: "Foto de perfil" %>
+
+    <div class="mt-3">
+      <%= f.button :submit, "Salvar perfil", class: "btn btn-primary w-100" %>
+    </div>
+  </div>
+<% end %>
