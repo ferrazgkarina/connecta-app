@@ -1,11 +1,21 @@
 <h1>Crie um encontro</h1>
 
 <%= form_with model: @event do |f| %>
-  <%= f.label :name %>
-  <%= f.text_field :name %>
-  <%= f.label :address %>
-  <%= f.text_field :address %>
-  <%= f.label :rating %>
-  <%= f.number_field :rating %>
-  <%= f.submit %>
+  <%= f.label :title, "Título do evento"  %>
+  <%= f.text_field :title, placeholder: "Ex: piquenique na Lagoa" %>
+  <%= f.label :date, "Quando vai ser?" %>
+  <%= f.date_field :date, placeholder: "Selecione dia, horário e duração estimada" %>
+  <%= f.label :address, "Onde vai ser?"  %>
+  <%= f.text_field :address, placeholder: "Ex: Parque da Catacumba, ao lado da quadra de volei" %>
+  <%= f.label :category, "Para quem tem interesse em:"  %>
+  <%= f.select :category, Event::CATEGORİES, placeholder: "Selecione uma categoria" %>
+  <%= f.label :costs, "Custos (se houver):"  %>
+  <%= f.number_field :costs, placeholder: "Ex: Ingresso R$ 30, Consumação R$ 50" %>
+  <%= f.label :details, "Regras ou observações"  %>
+  <%= f.text_field :details, placeholder: "Ex: Permitido crianças, Levar algo para compartilhar" %>
+  <%= f.label :confirmation_deadline, "Prazo de confimação:"  %>
+  <%= f.select :confirmation_deadline, Event::CONFİRMATİON_DEADLİNES, placeholder: "Escolha uma opção:" %>
+  <%= f.label :description, "Descrição" %>
+  <%= f.text_field :description, placeholder: "Conte o que planeja. Ex: Quero organizar uma tarde agradável de conexão entre mulheres que gostam de arte" %>
+  <%= f.submit "Criar evento" %>
 <% end %>
