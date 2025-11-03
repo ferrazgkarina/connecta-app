@@ -1,6 +1,5 @@
 class ProfilesController < ApplicationController
-  before_action :authenticate_user!
-  before_action :set_profile, only: [:show, :edit, :update]
+
 
   def new
     if current_user.profile.present?
