@@ -4,22 +4,25 @@ class ProfilesController < ApplicationController
 
   def new
     if current_user.profile.present?
-      redirect_to profile_path and return
+      redirect_to profile_path(current_user.profile) and return
     end
+
     @profile = Profile.new
   end
 
   def create
-    @profile = current_user.buld.profile(profile_params)
+    @profile = current_user.build_profile(profile_params)
+
     if @profile.save
-      redirect_to profile_path, notice: "Perfil criado com sucesso!"
+      redirect_to profile_path(@profile), notice: "Perfil criado com sucesso!"
     else
+      Rails.logger.info "ERROS DO PROFILE: #{@profile.errors.full_messages.to_sentence}"
       render :new, status: :unprocessable_entity
     end
   end
 
   def show
-    @profile = current_user.profile
+    @profile
   end
 
   def edit
@@ -41,6 +44,6 @@ class ProfilesController < ApplicationController
     end
 
     def profile_params
-      params.require(:profile).permit(:username, :description, :location, :interests, :picture)
+      params.require(:profile).permit(:username, :description, :location, :interests)
     end
 end
