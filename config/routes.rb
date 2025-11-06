@@ -1,6 +1,10 @@
 Rails.application.routes.draw do
-  devise_for :users
+  devise_for :users, controllers: {
+  registrations: "users/registrations"
+  }
   root to: "pages#home"
+
+  get "sobre", to: "pages#about", as: :about
 
   resource :profile, only: [:new, :create, :show, :edit, :update]
 
