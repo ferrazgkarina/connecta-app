@@ -2,7 +2,14 @@
   <h1>Connecta</h1>
   <p>Nunca mais deixe de viver algo incrível por falta de companhia.</p>
 
-  <%= link_to "Crie sua conta", new_user_registration_path %>
-  <%= link_to "Entrar", new_user_session_path %>
-  <%= link_to "Saiba mais sobre o Connecta", about_path %>
+  <% if user_signed_in? %>
+    <%= link_to "Ver meu perfil", profile_path %>
+    <% link_to "Sair", destroy_user_session_path,
+      data: {turbo_method: :delete} %>
+
+  <% else %>
+    <%= link_to "Crie sua conta", new_user_registration_path %>
+    <%= link_to "Entrar", new_user_session_path %>
+    <%= link_to "Saiba mais sobre o Connecta", about_path %>
+  <% end %>
 </div>
