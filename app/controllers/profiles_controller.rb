@@ -6,24 +6,29 @@ class ProfilesController < ApplicationController
     if current_user.profile.present?
       redirect_to profile_path and return
     end
-    @profile = Profile.new
+
+    @profile = current_user.build_profile
   end
 
   def create
-    @profile = current_user.buld.profile(profile_params)
+    if current_user.profile.present?
+      redirect_to profile_path, alert: "Você já tem um perfil criado" and return
+    end
+
+    @profile = current_user.build_profile(profile_params)
+
     if @profile.save
       redirect_to profile_path, notice: "Perfil criado com sucesso!"
+
     else
       render :new, status: :unprocessable_entity
     end
   end
 
   def show
-    @profile = current_user.profile
   end
 
   def edit
-    @profile = current_user.profile
   end
 
   def update
