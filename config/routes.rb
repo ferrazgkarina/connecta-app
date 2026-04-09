@@ -11,6 +11,9 @@ Rails.application.routes.draw do
   resources :events do
     resources :attendances, only: [:create, :destroy]
     resources :reviews, only: [:create, :new]
+    collection do
+      get :confirmed
+    end
   end
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
 

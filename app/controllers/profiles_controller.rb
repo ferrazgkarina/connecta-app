@@ -26,6 +26,8 @@ class ProfilesController < ApplicationController
   end
 
   def show
+    @nearby_events = Event.where.not(user: current_user).order(:date)
+    @my_events = current_user.events.order(:date)
   end
 
   def edit
@@ -46,6 +48,6 @@ class ProfilesController < ApplicationController
     end
 
     def profile_params
-      params.require(:profile).permit(:username, :description, :location, :interests, :picture)
+      params.require(:profile).permit(:name, :username, :description, :location, :interests, :picture)
     end
 end

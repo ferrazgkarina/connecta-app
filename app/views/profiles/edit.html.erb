@@ -1,21 +1,18 @@
 <div class="container d-flex flex-column align-items-center justify-content-center min-vh-100">
   <div class="w-100" style="max-width: 400px">
     <div class="text-center mb-4">
-      <h1 class="fs-3 fw-bold">Bem vinda!</h1>
-      <p class="text-muted small">
-        Quantas vezes você deixou de ir a um cinema, show ou exposição por não ter companhia?
-        O Connecta é para mulheres que buscam companhia nesses momentos, com segurança e confiança.
-      </p>
+      <p class="text-muted small">Mudou de localização ou descobriu novos interesses?</p>
+      <h1 class="fs-4 fw-bold">Atualize o seu perfil</h1>
     </div>
 
-    <%= simple_form_for @profile, url: profile_path do |f| %>
+    <%= simple_form_for @profile, url: profile_path, method: :patch do |f| %>
       <%= f.input :name,
                   label: false,
                   placeholder: "Nome",
                   input_html: { class: "form-control mb-2" } %>
       <%= f.input :username,
                   label: false,
-                  placeholder: "Nome de usuária (@username)",
+                  placeholder: "Nome de usuária",
                   input_html: { class: "form-control mb-2" } %>
       <%= f.input :location,
                   label: false,
@@ -36,7 +33,7 @@
                   placeholder: "Acrescente uma foto",
                   input_html: { class: "form-control mb-3" } %>
 
-      <%= f.button :submit, "Criar perfil", class: "btn btn-outline-dark w-100" %>
+      <%= f.button :submit, "Editar perfil", class: "btn btn-dark w-100" %>
     <% end %>
   </div>
 </div>

@@ -1,1 +1,100 @@
-<h1>Hello, <%= @profile.username %></h1>
+<div class="container py-4" style="max-width: 480px">
+
+  <%# Header: saudação + perfil %>
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+      <h1 class="fs-4 fw-bold mb-0">Olá, <%= @profile.name || @profile.username %>!</h1>
+      <p class="text-muted small mb-0">
+        <i class="fa-solid fa-location-dot"></i> <%= @profile.location %>
+      </p>
+    </div>
+    <div class="rounded-circle bg-secondary" style="width: 56px; height: 56px; overflow: hidden;">
+      <% if @profile.picture.present? %>
+        <img src="<%= @profile.picture %>" alt="Foto de perfil" class="w-100 h-100" style="object-fit: cover;">
+      <% end %>
+    </div>
+  </div>
+
+  <%# Encontros disponíveis %>
+  <h2 class="fs-6 fw-bold mb-2">Encontros disponíveis perto de você:</h2>
+
+  <input type="text" class="form-control mb-3" placeholder="Busque por interesse ou data">
+
+  <div class="d-flex gap-3 overflow-auto pb-2 mb-3">
+    <% if @nearby_events.any? %>
+      <% @nearby_events.each do |event| %>
+        <%= link_to event_path(event), class: "text-decoration-none text-dark flex-shrink-0", style: "width: 150px" do %>
+          <div class="card border-0 shadow-sm rounded-3">
+            <div class="card-body p-2">
+              <div class="bg-dark text-white rounded-2 text-center p-1 mb-2" style="font-size: 0.7rem; width: 36px">
+                <div class="fw-bold" style="font-size: 0.9rem"><%= event.date.strftime("%d") %></div>
+                <div><%= I18n.l(event.date, format: "%b").upcase %></div>
+              </div>
+              <p class="fw-bold mb-0 small"><%= event.title %></p>
+              <p class="text-muted mb-0" style="font-size: 0.7rem"><%= event.user.profile&.username %></p>
+              <p class="text-muted mb-1" style="font-size: 0.7rem"><%= event.address %></p>
+              <p class="small mb-0"><%= pluralize(event.attendances.count, "presença", "presenças") %></p>
+            </div>
+          </div>
+        <% end %>
+      <% end %>
+    <% else %>
+      <p class="text-muted small">Nenhum encontro disponível na sua região ainda.</p>
+    <% end %>
+  </div>
+
+  <%= link_to "Veja mais encontros na sua região", events_path, class: "btn btn-outline-dark w-100 mb-4" %>
+
+  <%# CTA criar encontro %>
+  <p class="text-center small mb-2">Não achou o que procura?</p>
+  <%= link_to "Crie o seu encontro", new_event_path, class: "btn btn-outline-dark w-100 mb-4" %>
+
+  <%# Meus encontros %>
+  <h2 class="fs-6 fw-bold mb-2">Meus encontros:</h2>
+
+  <div class="d-flex gap-3 overflow-auto pb-2 mb-3">
+    <% if @my_events.any? %>
+      <% @my_events.each do |event| %>
+        <%= link_to event_path(event), class: "text-decoration-none text-dark flex-shrink-0", style: "width: 150px" do %>
+          <div class="card border-0 shadow-sm rounded-3">
+            <div class="card-body p-2">
+              <div class="bg-dark text-white rounded-2 text-center p-1 mb-2" style="font-size: 0.7rem; width: 36px">
+                <div class="fw-bold" style="font-size: 0.9rem"><%= event.date.strftime("%d") %></div>
+                <div><%= I18n.l(event.date, format: "%b").upcase %></div>
+              </div>
+              <p class="fw-bold mb-0 small"><%= event.title %></p>
+              <p class="text-muted mb-1" style="font-size: 0.7rem"><%= event.address %></p>
+              <p class="small mb-0"><%= pluralize(event.attendances.count, "presença", "presenças") %></p>
+            </div>
+          </div>
+        <% end %>
+      <% end %>
+    <% else %>
+      <p class="text-muted small">Você ainda não criou nenhum encontro.</p>
+    <% end %>
+  </div>
+
+  <%= link_to "Veja todos os seus encontros confirmados", confirmed_events_path, class: "btn btn-outline-dark w-100 mb-5" %>
+
+  <%# Barra de navegação inferior %>
+  <nav class="fixed-bottom border-top bg-white py-2">
+    <div class="container d-flex justify-content-around" style="max-width: 480px">
+      <%= link_to profile_path, class: "text-dark" do %>
+        <i class="fa-solid fa-user-group fs-5"></i>
+      <% end %>
+      <%= link_to "#", class: "text-dark" do %>
+        <i class="fa-solid fa-message fs-5"></i>
+      <% end %>
+      <%= link_to events_path, class: "text-dark" do %>
+        <i class="fa-solid fa-calendar fs-5"></i>
+      <% end %>
+      <%= link_to profile_path, class: "text-dark" do %>
+        <i class="fa-solid fa-user fs-5"></i>
+      <% end %>
+      <%= link_to edit_profile_path, class: "text-dark" do %>
+        <i class="fa-solid fa-gear fs-5"></i>
+      <% end %>
+    </div>
+  </nav>
+
+</div>

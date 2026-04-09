@@ -1,15 +1,14 @@
-<div class="container">
-  <h1>Connecta</h1>
-  <p>Nunca mais deixe de viver algo incrível por falta de companhia.</p>
+<div class="container d-flex flex-column align-items-center justify-content-center min-vh-100 text-center">
+  <h1 class="display-4 fw-bold mb-2">connecta</h1>
 
   <% if user_signed_in? %>
-    <%= link_to "Ver meu perfil", profile_path %>
-    <% link_to "Sair", destroy_user_session_path,
-      data: {turbo_method: :delete} %>
-
+    <p class="mb-4">Bem vinda de volta!</p>
+    <%= link_to "Ver meu perfil", profile_path, class: "btn btn-outline-dark w-100 mb-2" %>
+    <%= link_to "Sair", destroy_user_session_path, data: { turbo_method: :delete }, class: "btn btn-outline-secondary w-100" %>
   <% else %>
-    <%= link_to "Crie sua conta", new_user_registration_path %>
-    <%= link_to "Entrar", new_user_session_path %>
-    <%= link_to "Saiba mais sobre o Connecta", about_path %>
+    <p class="lead mb-5">Nunca mais deixe de viver algo incrível por falta de companhia.</p>
+    <%= link_to "Criar conta", new_user_registration_path, class: "btn btn-outline-dark w-100 mb-2" %>
+    <%= link_to "Entrar", new_user_session_path, class: "btn btn-outline-dark w-100 mb-4" %>
+    <%= link_to "Saiba mais sobre o connecta", about_path, class: "text-muted small" %>
   <% end %>
 </div>

@@ -1,17 +1,15 @@
 <div class="container py-4 pb-5" style="max-width: 480px">
 
-  <h1 class="fs-4 fw-bold mb-3">
-    Encontros<% if current_user.profile&.location.present? %> em <%= current_user.profile.location %>:<% else %>:<% end %>
-  </h1>
+  <h1 class="fs-4 fw-bold mb-3">Meus encontros confirmados</h1>
 
   <%# Busca %>
   <input type="text" class="form-control mb-3" placeholder="Busque por título ou data">
 
   <%# Filtros de categoria %>
   <div class="d-flex gap-2 overflow-auto pb-2 mb-4" style="scrollbar-width: none">
-    <%= link_to "Todos", events_path, class: "badge rounded-pill text-nowrap #{params[:category].blank? ? 'bg-dark' : 'bg-light text-dark border'}" %>
+    <span class="badge rounded-pill bg-dark text-nowrap">Todos</span>
     <% Event::CATEGORIES.each do |cat| %>
-      <%= link_to cat, events_path(category: cat), class: "badge rounded-pill text-nowrap #{params[:category] == cat ? 'bg-dark' : 'bg-light text-dark border'}" %>
+      <span class="badge rounded-pill bg-light text-dark border text-nowrap"><%= cat %></span>
     <% end %>
   </div>
 
@@ -38,10 +36,9 @@
       <% end %>
     </div>
   <% else %>
-    <p class="text-muted text-center mt-5">Nenhum encontro encontrado.</p>
-  <% end %>
-
-</div>
+    <p class="text-muted text-center mt-5">Você ainda não confirmou presença em nenhum encontro.</p>
+  </div>
+<% end %>
 
 <%# Barra de navegação inferior %>
 <nav class="fixed-bottom border-top bg-white py-2">

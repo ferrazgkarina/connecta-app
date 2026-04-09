@@ -3,10 +3,19 @@ class EventsController < ApplicationController
   before_action :set_event, only: [:show, :edit, :update, :destroy]
 
   def index
-    @events = Event.all
+    @events = params[:category].present? ? Event.where(category: params[:category]) : Event.all
+    @events = @events.order(:date)
+  end
+
+  def confirmed
+    attended = current_user.attended_events
+    created = current_user.events
+    @events = (attended + created).uniq.sort_by(&:date)
   end
 
   def show
+    @attendance = @event.attendances.find_by(user: current_user)
+    @related_events = Event.where(category: @event.category).where.not(id: @event.id).limit(4)
   end
 
   def new
@@ -20,6 +29,9 @@ class EventsController < ApplicationController
     else
       render :new, status: :unprocessable_entity
     end
+  end
+
+  def edit
   end
 
   def update

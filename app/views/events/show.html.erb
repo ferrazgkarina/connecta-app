@@ -1,1 +1,129 @@
-<h1>Yoga na praça</h1>
+<div class="container py-4 pb-5" style="max-width: 480px">
+
+  <%# Imagem de capa %>
+  <div class="bg-secondary rounded-3 mb-3" style="height: 160px"></div>
+
+  <%# Título e data %>
+  <h1 class="fs-4 fw-bold mb-0"><%= @event.title %></h1>
+  <p class="text-muted small mb-3">
+    <%= @event.date.strftime("%d/%m") %> de <%= @event.time.strftime("%H:%M") %>
+    <% if @event.duration.present? %> - <%= @event.duration %><% end %>
+  </p>
+
+  <div class="row g-3 mb-3">
+    <%# Coluna esquerda: detalhes %>
+    <div class="col-7">
+      <% if @event.description.present? %>
+        <p class="small mb-2"><strong>Descrição:</strong><br><%= @event.description %></p>
+      <% end %>
+      <% if @event.address.present? %>
+        <p class="small mb-2"><strong>Endereço:</strong><br><%= @event.address %></p>
+      <% end %>
+      <% if @event.costs.present? %>
+        <p class="small mb-2"><strong>Custos:</strong><br><%= @event.costs %></p>
+      <% end %>
+      <% if @event.confirmation_deadline.present? %>
+        <p class="small mb-0"><strong>Importante:</strong><br><%= @event.confirmation_deadline %></p>
+      <% end %>
+    </div>
+
+    <%# Coluna direita: organizadora %>
+    <div class="col-5">
+      <p class="small fw-bold mb-1">Organizado por:</p>
+      <div class="d-flex align-items-center gap-2 mb-2">
+        <div class="rounded-circle bg-secondary flex-shrink-0" style="width: 32px; height: 32px;"></div>
+        <span class="small fw-bold"><%= @event.user.profile&.name || @event.user.profile&.username %></span>
+      </div>
+      <% if @event.user.profile&.description.present? %>
+        <p class="small text-muted fst-italic mb-2" style="font-size: 0.7rem">"<%= @event.user.profile.description %>"</p>
+      <% end %>
+
+      <p class="small fw-bold mb-1"><%= @event.attendances.count %> confirmadas:</p>
+      <div class="d-flex flex-wrap gap-2">
+        <% @event.attendances.includes(:user).limit(5).each do |attendance| %>
+          <div class="text-center" style="width: 40px">
+            <div class="rounded-circle bg-secondary border mx-auto" style="width: 32px; height: 32px;"></div>
+            <p class="mb-0" style="font-size: 0.6rem; word-break: break-all"><%= attendance.user.profile&.username || attendance.user.email.split("@").first %></p>
+          </div>
+        <% end %>
+      </div>
+    </div>
+  </div>
+
+  <%# Chat do encontro %>
+  <div class="border rounded-3 p-3 mb-3">
+    <p class="small fw-bold mb-2">Chat do encontro</p>
+    <div style="min-height: 80px; max-height: 200px; overflow-y: auto;" class="mb-2">
+      <p class="text-muted small text-center mt-3">Nenhuma mensagem ainda.</p>
+    </div>
+    <div class="d-flex gap-2">
+      <input type="text" class="form-control form-control-sm" placeholder="Escreva uma mensagem...">
+      <button class="btn btn-dark btn-sm">Enviar</button>
+    </div>
+  </div>
+
+  <%# Botão participar/cancelar ou editar/cancelar para a criadora %>
+  <% if @event.user == current_user %>
+    <div class="d-flex gap-2 mb-4">
+      <%= link_to "Editar encontro", edit_event_path(@event), class: "btn btn-outline-dark w-50" %>
+      <%= button_to "Cancelar encontro", event_path(@event), method: :delete,
+          class: "btn btn-outline-danger w-50",
+          data: { turbo_confirm: "Tem certeza que deseja cancelar este encontro?" } %>
+    </div>
+  <% elsif @attendance %>
+    <%= button_to "Cancelar participação",
+        event_attendance_path(@event, @attendance),
+        method: :delete,
+        class: "btn btn-outline-danger w-100 mb-4" %>
+  <% else %>
+    <%= button_to "Quero participar",
+        event_attendances_path(@event),
+        method: :post,
+        class: "btn btn-dark w-100 mb-4" %>
+  <% end %>
+
+  <%# Talvez você também curta %>
+  <% if @related_events.any? %>
+    <h2 class="fs-6 fw-bold mb-2">Talvez você também curta:</h2>
+    <div class="d-flex gap-3 overflow-auto pb-2">
+      <% @related_events.each do |event| %>
+        <%= link_to event_path(event), class: "text-decoration-none text-dark flex-shrink-0", style: "width: 150px" do %>
+          <div class="card border-0 shadow-sm rounded-3">
+            <div class="card-body p-2">
+              <div class="bg-dark text-white rounded-2 text-center p-1 mb-2" style="font-size: 0.7rem; width: 36px">
+                <div class="fw-bold" style="font-size: 0.9rem"><%= event.date.strftime("%d") %></div>
+                <div><%= I18n.l(event.date, format: "%b").upcase %></div>
+              </div>
+              <p class="fw-bold mb-0 small"><%= event.title %></p>
+              <p class="text-muted mb-0" style="font-size: 0.7rem"><%= event.user.profile&.username %></p>
+              <p class="text-muted mb-1" style="font-size: 0.7rem"><%= event.address %></p>
+              <p class="small mb-0"><%= pluralize(event.attendances.count, "presença", "presenças") %></p>
+            </div>
+          </div>
+        <% end %>
+      <% end %>
+    </div>
+  <% end %>
+
+</div>
+
+<%# Barra de navegação inferior %>
+<nav class="fixed-bottom border-top bg-white py-2">
+  <div class="container d-flex justify-content-around" style="max-width: 480px">
+    <%= link_to profile_path, class: "text-dark" do %>
+      <i class="fa-solid fa-user-group fs-5"></i>
+    <% end %>
+    <%= link_to "#", class: "text-dark" do %>
+      <i class="fa-solid fa-message fs-5"></i>
+    <% end %>
+    <%= link_to events_path, class: "text-dark" do %>
+      <i class="fa-solid fa-calendar fs-5"></i>
+    <% end %>
+    <%= link_to profile_path, class: "text-dark" do %>
+      <i class="fa-solid fa-user fs-5"></i>
+    <% end %>
+    <%= link_to edit_profile_path, class: "text-dark" do %>
+      <i class="fa-solid fa-gear fs-5"></i>
+    <% end %>
+  </div>
+</nav>
