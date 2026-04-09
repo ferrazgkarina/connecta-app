@@ -32,7 +32,7 @@ class ProfilesController < ApplicationController
   end
 
   def update
-    if profile.update(profile_params)
+    if @profile.update(profile_params)
       redirect_to profile_path, notice: "Perfil atualizado com sucesso"
     else
       render :edit, status: :unprocessable_entity
