@@ -1,5 +1,9 @@
 <div class="container py-4 pb-5" style="max-width: 480px">
 
+  <%= link_to profile_path, class: "text-muted small d-inline-block mb-3" do %>
+    <i class="fa-solid fa-arrow-left me-1"></i> Voltar
+  <% end %>
+
   <%# Imagem de capa %>
   <div class="bg-secondary rounded-3 mb-3" style="height: 160px"></div>
 
@@ -66,9 +70,11 @@
   <% if @event.user == current_user %>
     <div class="d-flex gap-2 mb-4">
       <%= link_to "Editar encontro", edit_event_path(@event), class: "btn btn-outline-dark w-50" %>
+      <% count = @event.attendances.count %>
+      <% confirm_msg = count > 0 ? "#{count} #{count == 1 ? 'pessoa confirmou' : 'pessoas confirmaram'} presença. Tem certeza que deseja cancelar este encontro?" : "Tem certeza que deseja cancelar este encontro?" %>
       <%= button_to "Cancelar encontro", event_path(@event), method: :delete,
           class: "btn btn-outline-danger w-50",
-          data: { turbo_confirm: "Tem certeza que deseja cancelar este encontro?" } %>
+          data: { turbo_confirm: confirm_msg } %>
     </div>
   <% elsif @attendance %>
     <%= button_to "Cancelar participação",
@@ -107,23 +113,4 @@
 
 </div>
 
-<%# Barra de navegação inferior %>
-<nav class="fixed-bottom border-top bg-white py-2">
-  <div class="container d-flex justify-content-around" style="max-width: 480px">
-    <%= link_to profile_path, class: "text-dark" do %>
-      <i class="fa-solid fa-user-group fs-5"></i>
-    <% end %>
-    <%= link_to "#", class: "text-dark" do %>
-      <i class="fa-solid fa-message fs-5"></i>
-    <% end %>
-    <%= link_to events_path, class: "text-dark" do %>
-      <i class="fa-solid fa-calendar fs-5"></i>
-    <% end %>
-    <%= link_to profile_path, class: "text-dark" do %>
-      <i class="fa-solid fa-user fs-5"></i>
-    <% end %>
-    <%= link_to edit_profile_path, class: "text-dark" do %>
-      <i class="fa-solid fa-gear fs-5"></i>
-    <% end %>
-  </div>
-</nav>
+<%= render "shared/footer_nav" %>

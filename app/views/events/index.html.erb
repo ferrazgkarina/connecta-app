@@ -1,7 +1,11 @@
 <div class="container py-4 pb-5" style="max-width: 480px">
 
+  <% city = params[:city] || current_user.profile&.location %>
+  <%= link_to profile_path, class: "text-muted small d-inline-block mb-3" do %>
+    <i class="fa-solid fa-arrow-left me-1"></i> Voltar
+  <% end %>
   <h1 class="fs-4 fw-bold mb-3">
-    Encontros<% if current_user.profile&.location.present? %> em <%= current_user.profile.location %>:<% else %>:<% end %>
+    Encontros<% if city.present? %> em <%= city %>:<% else %>:<% end %>
   </h1>
 
   <%# Busca %>
@@ -9,9 +13,9 @@
 
   <%# Filtros de categoria %>
   <div class="d-flex gap-2 overflow-auto pb-2 mb-4" style="scrollbar-width: none">
-    <%= link_to "Todos", events_path, class: "badge rounded-pill text-nowrap #{params[:category].blank? ? 'bg-dark' : 'bg-light text-dark border'}" %>
+    <%= link_to "Todos", events_path(city: city), class: "badge rounded-pill text-nowrap #{params[:category].blank? ? 'bg-dark' : 'bg-light text-dark border'}" %>
     <% Event::CATEGORIES.each do |cat| %>
-      <%= link_to cat, events_path(category: cat), class: "badge rounded-pill text-nowrap #{params[:category] == cat ? 'bg-dark' : 'bg-light text-dark border'}" %>
+      <%= link_to cat, events_path(city: city, category: cat), class: "badge rounded-pill text-nowrap #{params[:category] == cat ? 'bg-dark' : 'bg-light text-dark border'}" %>
     <% end %>
   </div>
 
@@ -43,23 +47,4 @@
 
 </div>
 
-<%# Barra de navegação inferior %>
-<nav class="fixed-bottom border-top bg-white py-2">
-  <div class="container d-flex justify-content-around" style="max-width: 480px">
-    <%= link_to profile_path, class: "text-dark" do %>
-      <i class="fa-solid fa-user-group fs-5"></i>
-    <% end %>
-    <%= link_to "#", class: "text-dark" do %>
-      <i class="fa-solid fa-message fs-5"></i>
-    <% end %>
-    <%= link_to events_path, class: "text-dark" do %>
-      <i class="fa-solid fa-calendar fs-5"></i>
-    <% end %>
-    <%= link_to profile_path, class: "text-dark" do %>
-      <i class="fa-solid fa-user fs-5"></i>
-    <% end %>
-    <%= link_to edit_profile_path, class: "text-dark" do %>
-      <i class="fa-solid fa-gear fs-5"></i>
-    <% end %>
-  </div>
-</nav>
+<%= render "shared/footer_nav" %>

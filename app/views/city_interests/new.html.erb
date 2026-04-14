@@ -1,0 +1,49 @@
+<div class="container d-flex flex-column align-items-center justify-content-center min-vh-100 text-center">
+  <div class="w-100" style="max-width: 400px">
+    <h1 class="fs-4 fw-bold mb-2">Sua cidade ainda não está disponível</h1>
+    <p class="text-muted small mb-4">
+      Registre seu interesse e seja uma das primeiras a saber quando o Connecta chegar perto de você!
+    </p>
+
+    <%= simple_form_for @city_interest, url: city_interests_path do |f| %>
+      <%= f.input :email,
+                  label: false,
+                  placeholder: "Seu email",
+                  input_html: { class: "form-control mb-2" } %>
+      <%= f.input :city,
+                  label: false,
+                  placeholder: "Sua cidade",
+                  input_html: { class: "form-control mb-3" } %>
+      <%= f.button :submit, "Registrar interesse", class: "btn btn-outline-dark w-100" %>
+    <% end %>
+
+    <%= link_to "Voltar", root_path, class: "d-block text-muted small mt-3" %>
+  </div>
+</div>
+
+<%# Modal de confirmação %>
+<div class="modal fade" id="successModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content border-0 rounded-4 text-center p-4">
+      <div class="modal-body">
+        <p class="fs-2 mb-2">🌸</p>
+        <h5 class="fw-bold mb-2">Interesse registrado!</h5>
+        <p class="text-muted small mb-4">
+          Que bom que você quer fazer parte do Connecta!
+          Assim que chegarmos na sua cidade, você será uma das primeiras a saber.
+          Até lá, conta com a gente.
+        </p>
+        <%= link_to "Voltar à home", root_path, class: "btn btn-dark w-100" %>
+      </div>
+    </div>
+  </div>
+</div>
+
+<% if flash[:notice] == "registered" %>
+  <script>
+    document.addEventListener("turbo:load", function () {
+      var modal = new bootstrap.Modal(document.getElementById("successModal"), { backdrop: "static" });
+      modal.show();
+    });
+  </script>
+<% end %>

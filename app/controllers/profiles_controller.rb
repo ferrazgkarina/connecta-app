@@ -26,7 +26,14 @@ class ProfilesController < ApplicationController
   end
 
   def show
-    @nearby_events = Event.where.not(user: current_user).order(:date)
+    interests = current_user.profile&.interests&.compact_blank || []
+    city = current_user.profile&.location
+
+    scope = Event.where.not(user: current_user).where(city: city)
+    scope = scope.where(category: interests) if interests.any?
+    scope = scope.where("date >= ?", params[:date]) if params[:date].present?
+
+    @nearby_events = scope.order(:date).limit(6)
     @my_events = current_user.events.order(:date)
   end
 
@@ -48,6 +55,8 @@ class ProfilesController < ApplicationController
     end
 
     def profile_params
-      params.require(:profile).permit(:name, :username, :description, :location, :interests, :picture)
+      permitted = params.require(:profile).permit(:name, :username, :description, :location, :picture, interests: [])
+      permitted[:interests] = permitted[:interests]&.reject(&:blank?) if permitted[:interests]
+      permitted
     end
 end

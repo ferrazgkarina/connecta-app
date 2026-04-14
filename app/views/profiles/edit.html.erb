@@ -16,12 +16,26 @@
                   input_html: { class: "form-control mb-2" } %>
       <%= f.input :location,
                   label: false,
-                  placeholder: "Cidade",
-                  input_html: { class: "form-control mb-2" } %>
-      <%= f.input :interests,
-                  label: false,
-                  placeholder: "Interesses",
-                  input_html: { class: "form-control mb-2" } %>
+                  as: :select,
+                  collection: Profile::CITIES,
+                  prompt: "Selecione sua cidade",
+                  input_html: { class: "form-select mb-2" } %>
+      <p class="text-muted mb-2" style="font-size: 0.75rem">
+        Sua cidade ainda não está disponível? Quem sabe no futuro!
+      </p>
+
+      <select name="profile[interests][]" class="form-select mb-2">
+        <option value="">Primeiro interesse</option>
+        <% Profile::INTERESTS.each do |interest| %>
+          <option value="<%= interest %>" <%= "selected" if @profile.interests&.first == interest %>><%= interest %></option>
+        <% end %>
+      </select>
+      <select name="profile[interests][]" class="form-select mb-2">
+        <option value="">Segundo interesse (opcional)</option>
+        <% Profile::INTERESTS.each do |interest| %>
+          <option value="<%= interest %>" <%= "selected" if @profile.interests&.second == interest %>><%= interest %></option>
+        <% end %>
+      </select>
       <%= f.input :description,
                   as: :text,
                   label: false,
@@ -34,6 +48,12 @@
                   input_html: { class: "form-control mb-3" } %>
 
       <%= f.button :submit, "Editar perfil", class: "btn btn-dark w-100" %>
+    <% end %>
+
+    <hr class="my-4">
+
+    <%= link_to destroy_user_session_path, data: { turbo_method: :delete }, class: "btn btn-outline-danger w-100" do %>
+      <i class="fa-solid fa-right-from-bracket me-1"></i> Sair da conta
     <% end %>
   </div>
 </div>

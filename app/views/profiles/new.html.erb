@@ -17,14 +17,34 @@
                   label: false,
                   placeholder: "Nome de usuária (@username)",
                   input_html: { class: "form-control mb-2" } %>
-      <%= f.input :location,
-                  label: false,
-                  placeholder: "Cidade",
-                  input_html: { class: "form-control mb-2" } %>
-      <%= f.input :interests,
-                  label: false,
-                  placeholder: "Interesses",
-                  input_html: { class: "form-control mb-2" } %>
+
+      <%# Cidade %>
+      <div class="mb-2">
+        <%= f.input :location,
+                    label: false,
+                    as: :select,
+                    collection: Profile::CITIES,
+                    prompt: "Selecione sua cidade",
+                    input_html: { class: "form-select" } %>
+
+      </div>
+
+      <%# Interesses %>
+      <div class="mb-2">
+        <select name="profile[interests][]" class="form-select mb-2">
+          <option value="">Primeiro interesse</option>
+          <% Profile::INTERESTS.each do |interest| %>
+            <option value="<%= interest %>"><%= interest %></option>
+          <% end %>
+        </select>
+        <select name="profile[interests][]" class="form-select">
+          <option value="">Segundo interesse (opcional)</option>
+          <% Profile::INTERESTS.each do |interest| %>
+            <option value="<%= interest %>"><%= interest %></option>
+          <% end %>
+        </select>
+      </div>
+
       <%= f.input :description,
                   as: :text,
                   label: false,

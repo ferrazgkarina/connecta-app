@@ -3,7 +3,10 @@ class EventsController < ApplicationController
   before_action :set_event, only: [:show, :edit, :update, :destroy]
 
   def index
-    @events = params[:category].present? ? Event.where(category: params[:category]) : Event.all
+    city = params[:city] || current_user.profile&.location
+    @events = Event.all
+    @events = @events.where(city: city) if city.present?
+    @events = @events.where(category: params[:category]) if params[:category].present?
     @events = @events.order(:date)
   end
 
@@ -11,6 +14,8 @@ class EventsController < ApplicationController
     attended = current_user.attended_events
     created = current_user.events
     @events = (attended + created).uniq.sort_by(&:date)
+    @events_by_date = @events.group_by(&:date)
+    @current_month = params[:month] ? Date.parse(params[:month]) : Date.today.beginning_of_month
   end
 
   def show
@@ -54,6 +59,6 @@ class EventsController < ApplicationController
   end
 
   def event_params
-    params.require(:event).permit(:title, :description, :category, :date, :time, :duration, :address, :costs, :confirmation_deadline)
+    params.require(:event).permit(:title, :description, :category, :date, :time, :duration, :address, :city, :costs, :confirmation_deadline)
   end
 end

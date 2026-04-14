@@ -1,0 +1,19 @@
+<nav class="fixed-bottom border-top bg-white py-2">
+  <div class="container d-flex justify-content-around" style="max-width: 480px">
+    <%= link_to new_event_path, class: "text-dark" do %>
+      <i class="fa-solid fa-circle-plus fs-5"></i>
+    <% end %>
+    <%= link_to "#", class: "text-dark" do %>
+      <i class="fa-solid fa-message fs-5"></i>
+    <% end %>
+    <%= link_to confirmed_events_path, class: "text-dark" do %>
+      <i class="fa-solid fa-calendar fs-5"></i>
+    <% end %>
+    <%= link_to profile_path, class: "text-dark" do %>
+      <i class="fa-solid fa-user fs-5"></i>
+    <% end %>
+    <%= link_to edit_profile_path, class: "text-dark" do %>
+      <i class="fa-solid fa-gear fs-5"></i>
+    <% end %>
+  </div>
+</nav>

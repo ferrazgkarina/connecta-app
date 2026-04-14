@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2026_04_09_093521) do
+ActiveRecord::Schema[7.1].define(version: 2026_04_14_135258) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -22,6 +22,13 @@ ActiveRecord::Schema[7.1].define(version: 2026_04_09_093521) do
     t.datetime "updated_at", null: false
     t.index ["event_id"], name: "index_attendances_on_event_id"
     t.index ["user_id"], name: "index_attendances_on_user_id"
+  end
+
+  create_table "city_interests", force: :cascade do |t|
+    t.string "email", null: false
+    t.string "city", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "events", force: :cascade do |t|
@@ -37,6 +44,7 @@ ActiveRecord::Schema[7.1].define(version: 2026_04_09_093521) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "confirmation_deadline"
+    t.string "city"
     t.index ["user_id"], name: "index_events_on_user_id"
   end
 
@@ -55,11 +63,11 @@ ActiveRecord::Schema[7.1].define(version: 2026_04_09_093521) do
     t.string "username"
     t.text "description"
     t.string "location"
-    t.string "interests"
     t.string "picture"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "name"
+    t.string "interests", default: [], array: true
     t.index ["user_id"], name: "index_profiles_on_user_id"
   end
 

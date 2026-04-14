@@ -3,6 +3,7 @@ Rails.application.routes.draw do
   registrations: "users/registrations"
   }
   root to: "pages#home"
+  resources :city_interests, only: [:new, :create]
 
   get "sobre", to: "pages#about", as: :about
 
