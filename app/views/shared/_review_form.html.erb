@@ -1,0 +1,48 @@
+<div class="border rounded-3 p-3 mb-3">
+  <p class="small fw-bold mb-1">Como foi o encontro?</p>
+  <p class="text-muted mb-3" style="font-size: 0.75rem">
+    Sua avaliação é sobre a experiência com quem organizou e a companhia — não sobre o local, a comida ou o evento em si.
+    Isso ajuda outras mulheres a conhecerem quem está por trás dos encontros. 💛
+  </p>
+
+  <%= simple_form_for [event, Review.new], url: event_reviews_path(event) do |f| %>
+    <%# Seleção de corações %>
+    <div class="d-flex justify-content-center gap-3 mb-3">
+      <% [[3, "Bom"], [4, "Ótimo"], [5, "Incrível"]].each do |value, label| %>
+        <label class="heart-option text-center" style="cursor: pointer">
+          <%= f.radio_button :rating, value, class: "d-none heart-radio", id: "rating_#{value}" %>
+          <div class="hearts" style="font-size: 1.3rem; color: #ddd; letter-spacing: 2px">
+            <% value.times do %>♥<% end %>
+          </div>
+          <div class="small text-muted mt-1"><%= label %></div>
+        </label>
+      <% end %>
+    </div>
+
+    <%= f.input :comment,
+                as: :text,
+                label: false,
+                placeholder: "Conte um pouco sobre a experiência (opcional)",
+                input_html: { class: "form-control mb-3", rows: 3 } %>
+    <%= f.button :submit, "Enviar avaliação", class: "btn btn-dark w-100" %>
+  <% end %>
+</div>
+
+<style>
+  .heart-option .hearts { transition: color 0.15s; }
+  .heart-option.selected .hearts { color: #e74c3c !important; }
+  .heart-option.selected .text-muted { color: #333 !important; font-weight: bold; }
+</style>
+
+<script>
+  document.addEventListener("turbo:load", function () {
+    document.querySelectorAll(".heart-radio").forEach(function (radio) {
+      radio.addEventListener("change", function () {
+        document.querySelectorAll(".heart-option").forEach(function (opt) {
+          opt.classList.remove("selected");
+        });
+        this.closest(".heart-option").classList.add("selected");
+      });
+    });
+  });
+</script>

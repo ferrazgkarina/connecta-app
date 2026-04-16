@@ -5,7 +5,7 @@ class AttendancesController < ApplicationController
   def create
     @attendance = @event.attendances.build(user: current_user)
     if @attendance.save
-      redirect_to @event, notice: "Presença confirmada!"
+      redirect_to confirmed_events_path, notice: "Presença confirmada! O encontro foi adicionado à sua agenda."
     else
       redirect_to @event, alert: "Não foi possível confirmar presença."
     end

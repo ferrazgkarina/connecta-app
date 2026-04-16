@@ -19,8 +19,16 @@ class EventsController < ApplicationController
   end
 
   def show
-    @attendance = @event.attendances.find_by(user: current_user)
+    @attendance     = @event.attendances.find_by(user: current_user)
     @related_events = Event.where(category: @event.category).where.not(id: @event.id).limit(4)
+    @reviews        = @event.reviews.includes(:reviewer)
+    @user_review    = @reviews.find_by(reviewer: current_user)
+    @event_ended    = @event.date < Date.today
+    @can_review     = @event_ended && @attendance && @event.user != current_user && @user_review.nil?
+
+    @creator         = @event.user
+    @creator_reviews = @creator.reviews_received.includes(:reviewer, :event).order(created_at: :desc)
+    @creator_events  = @creator.events.where.not(id: @event.id).order(date: :desc).limit(4)
   end
 
   def new

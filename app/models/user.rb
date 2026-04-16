@@ -8,5 +8,12 @@ class User < ApplicationRecord
   has_many :attendances, dependent: :destroy
   has_many :attended_events, through: :attendances, source: :event
   has_one :profile, dependent: :destroy
+  has_many :reviews_received, class_name: "Review", foreign_key: :reviewed_id, dependent: :destroy
+  has_many :reviews_given, class_name: "Review", foreign_key: :reviewer_id, dependent: :destroy
+
+  def average_rating
+    return nil if reviews_received.empty?
+    (reviews_received.sum(:rating).to_f / reviews_received.count).round(1)
+  end
 
 end

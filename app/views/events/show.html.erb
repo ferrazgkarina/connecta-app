@@ -34,10 +34,22 @@
     <%# Coluna direita: organizadora %>
     <div class="col-5">
       <p class="small fw-bold mb-1">Organizado por:</p>
-      <div class="d-flex align-items-center gap-2 mb-2">
+      <div class="d-flex align-items-center gap-2 mb-1" data-bs-toggle="modal" data-bs-target="#creatorModal" style="cursor: pointer">
         <div class="rounded-circle bg-secondary flex-shrink-0" style="width: 32px; height: 32px;"></div>
-        <span class="small fw-bold"><%= @event.user.profile&.name || @event.user.profile&.username %></span>
+        <span class="small fw-bold text-decoration-underline"><%= @creator.profile&.name || @creator.profile&.username %></span>
       </div>
+
+      <%# Média de avaliações da criadora %>
+      <% avg = @event.user.average_rating %>
+      <% if avg %>
+        <p class="mb-2" style="font-size: 0.75rem">
+          <% avg.round.times do %>♥<% end %>
+          <span class="text-muted"><%= avg %> / 5</span>
+        </p>
+      <% else %>
+        <p class="text-muted mb-2" style="font-size: 0.7rem">Sem avaliações ainda</p>
+      <% end %>
+
       <% if @event.user.profile&.description.present? %>
         <p class="small text-muted fst-italic mb-2" style="font-size: 0.7rem">"<%= @event.user.profile.description %>"</p>
       <% end %>
@@ -88,6 +100,42 @@
         class: "btn btn-dark w-100 mb-4" %>
   <% end %>
 
+  <%# Form de review — só aparece se o evento terminou e a usuária participou %>
+  <% if @can_review %>
+    <%= render "shared/review_form", event: @event %>
+  <% elsif @user_review %>
+    <div class="border rounded-3 p-3 mb-3 text-center">
+      <p class="small fw-bold mb-1">Sua avaliação:</p>
+      <p class="mb-1" style="font-size: 1.3rem">
+        <% @user_review.rating.times do %>♥<% end %>
+      </p>
+      <% if @user_review.comment.present? %>
+        <p class="text-muted small mb-0">"<%= @user_review.comment %>"</p>
+      <% end %>
+    </div>
+  <% end %>
+
+  <%# Reviews do evento %>
+  <% if @reviews.any? %>
+    <div class="mb-4">
+      <p class="small fw-bold mb-2">Avaliações (<%= @reviews.count %>):</p>
+      <% @reviews.each do |review| %>
+        <div class="border rounded-3 p-2 mb-2">
+          <div class="d-flex align-items-center gap-2 mb-1">
+            <div class="rounded-circle bg-secondary flex-shrink-0" style="width: 24px; height: 24px;"></div>
+            <span class="small fw-bold"><%= review.reviewer.profile&.username || review.reviewer.email.split("@").first %></span>
+            <span class="ms-auto" style="font-size: 0.85rem; color: #e74c3c">
+              <% review.rating.times do %>♥<% end %>
+            </span>
+          </div>
+          <% if review.comment.present? %>
+            <p class="text-muted small mb-0">"<%= review.comment %>"</p>
+          <% end %>
+        </div>
+      <% end %>
+    </div>
+  <% end %>
+
   <%# Talvez você também curta %>
   <% if @related_events.any? %>
     <h2 class="fs-6 fw-bold mb-2">Talvez você também curta:</h2>
@@ -114,3 +162,85 @@
 </div>
 
 <%= render "shared/footer_nav" %>
+
+<%# Modal da criadora %>
+<div class="modal fade" id="creatorModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+    <div class="modal-content border-0 rounded-4">
+      <div class="modal-body p-4">
+
+        <%# Header do perfil %>
+        <div class="d-flex align-items-center gap-3 mb-3">
+          <div class="rounded-circle bg-secondary flex-shrink-0" style="width: 56px; height: 56px;"></div>
+          <div>
+            <p class="fw-bold mb-0"><%= @creator.profile&.name %></p>
+            <p class="text-muted small mb-0">@<%= @creator.profile&.username %></p>
+            <% if @creator.profile&.location.present? %>
+              <p class="text-muted small mb-0"><i class="fa-solid fa-location-dot me-1"></i><%= @creator.profile.location %></p>
+            <% end %>
+          </div>
+        </div>
+
+        <%# Bio %>
+        <% if @creator.profile&.description.present? %>
+          <p class="small text-muted fst-italic mb-3">"<%= @creator.profile.description %>"</p>
+        <% end %>
+
+        <%# Avaliação média %>
+        <% avg = @creator.average_rating %>
+        <div class="d-flex align-items-center gap-2 mb-3">
+          <% if avg %>
+            <span style="color: #e74c3c; font-size: 1.1rem">
+              <% avg.round.times do %>♥<% end %>
+            </span>
+            <span class="small text-muted"><%= avg %> · <%= @creator_reviews.count %> <%= @creator_reviews.count == 1 ? "avaliação" : "avaliações" %></span>
+          <% else %>
+            <span class="small text-muted">Sem avaliações ainda</span>
+          <% end %>
+        </div>
+
+        <%# Comentários das avaliações %>
+        <% comments = @creator_reviews.select { |r| r.comment.present? } %>
+        <% if comments.any? %>
+          <p class="small fw-bold mb-2">O que disseram:</p>
+          <% comments.first(3).each do |review| %>
+            <div class="bg-light rounded-3 p-2 mb-2">
+              <p class="small mb-1 fst-italic">"<%= review.comment %>"</p>
+              <p class="text-muted mb-0" style="font-size: 0.7rem">
+                <%= review.reviewer.profile&.username %> · <%= review.event.title %>
+              </p>
+            </div>
+          <% end %>
+        <% end %>
+
+        <%# Outros encontros %>
+        <% if @creator_events.any? %>
+          <p class="small fw-bold mt-3 mb-2">Outros encontros de <%= @creator.profile&.name&.split&.first %>:</p>
+          <% @creator_events.each do |event| %>
+            <%= link_to event_path(event), class: "text-decoration-none text-dark" do %>
+              <div class="d-flex align-items-center gap-2 border rounded-3 p-2 mb-2">
+                <div class="bg-dark text-white rounded-2 text-center flex-shrink-0 p-1" style="min-width: 38px; font-size: 0.65rem">
+                  <div class="fw-bold" style="font-size: 0.85rem"><%= event.date.strftime("%d") %></div>
+                  <div><%= I18n.l(event.date, format: "%b").upcase %></div>
+                </div>
+                <div>
+                  <p class="small fw-bold mb-0"><%= event.title %></p>
+                  <p class="text-muted mb-0" style="font-size: 0.7rem"><%= event.category %> · <%= event.city %></p>
+                </div>
+              </div>
+            <% end %>
+          <% end %>
+        <% end %>
+
+        <%# CTAs %>
+        <div class="mt-3 d-flex gap-2">
+          <%= link_to events_path(city: @creator.profile&.location), class: "btn btn-outline-dark btn-sm w-100" do %>
+            Ver encontros em <%= @creator.profile&.location %>
+          <% end %>
+          <button class="btn btn-outline-secondary btn-sm w-100" data-bs-dismiss="modal">Fechar</button>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>

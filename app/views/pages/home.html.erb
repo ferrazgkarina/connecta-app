@@ -1,18 +1,79 @@
-<div class="container d-flex flex-column align-items-center justify-content-center min-vh-100 text-center">
-  <div class= "home" style="max-width: 400px">
-    <h1 class="display-4 fw-bold mb-2">connecta</h1>
+<div class="container py-4 pb-5 text-center" style="max-width: 400px; margin: 0 auto">
+  <h1 class="display-5 fw-bold mb-2">connecta</h1>
 
-    <% if user_signed_in? %>
-      <p class="mb-4">Bem vinda de volta!</p>
-      <%= link_to "Ver meu perfil", profile_path, class: "btn btn-outline-dark w-100 mb-2" %>
-      <%= link_to "Sair", destroy_user_session_path, data: { turbo_method: :delete }, class: "btn btn-outline-secondary w-100" %>
-    <% else %>
-      <p class="lead mb-3">Nunca mais deixe de viver algo incrível por falta de companhia.</p>
-      <p class="text-muted small mb-4">Disponível em: Rio de Janeiro, São Paulo e Belo Horizonte</p>
-      <%= link_to "Criar conta", new_user_registration_path, class: "btn btn-outline-dark w-100 mb-2" %>
-      <%= link_to "Entrar", new_user_session_path, class: "btn btn-outline-dark w-100 mb-4" %>
-      <%= link_to "Tem interesse em outras cidades?", new_city_interest_path, class: "text-muted small d-block mb-2" %>
-      <%= link_to "Saiba mais sobre o connecta", about_path, class: "text-muted small" %>
+  <% if user_signed_in? %>
+    <p class="text-muted small mb-4">Bem vinda de volta, <%= current_user.profile&.name || current_user.profile&.username %>!</p>
+
+    <%# Meus próximos encontros %>
+    <div class="text-start mb-4">
+      <h2 class="fs-6 fw-bold mb-2">Meus próximos encontros</h2>
+      <% if @next_events.any? %>
+        <% @next_events.each do |event| %>
+          <%= link_to event_path(event), class: "text-decoration-none text-dark" do %>
+            <div class="d-flex align-items-center gap-3 border rounded-3 p-2 mb-2">
+              <div class="bg-dark text-white rounded-2 text-center p-1 flex-shrink-0" style="min-width: 38px; font-size: 0.65rem">
+                <div class="fw-bold" style="font-size: 0.9rem"><%= event.date.strftime("%d") %></div>
+                <div><%= I18n.l(event.date, format: "%b").upcase %></div>
+              </div>
+              <div>
+                <p class="fw-bold mb-0 small"><%= event.title %></p>
+                <p class="text-muted mb-0" style="font-size: 0.7rem"><%= event.city %> · <%= event.time.strftime("%H:%M") %></p>
+              </div>
+            </div>
+          <% end %>
+        <% end %>
+        <%= link_to "Ver todos →", confirmed_events_path, class: "text-muted small" %>
+      <% else %>
+        <div class="border rounded-3 p-3 text-muted small">
+          Você não tem encontros confirmados ainda.
+        </div>
+      <% end %>
+    </div>
+
+    <%# Novidades na cidade %>
+    <div class="text-start mb-4">
+      <h2 class="fs-6 fw-bold mb-2">Novidades em <%= current_user.profile&.location %></h2>
+      <% if @new_city_events.any? %>
+        <% @new_city_events.each do |event| %>
+          <%= link_to event_path(event), class: "text-decoration-none text-dark" do %>
+            <div class="d-flex align-items-center gap-3 border rounded-3 p-2 mb-2">
+              <div class="bg-dark text-white rounded-2 text-center p-1 flex-shrink-0" style="min-width: 38px; font-size: 0.65rem">
+                <div class="fw-bold" style="font-size: 0.9rem"><%= event.date.strftime("%d") %></div>
+                <div><%= I18n.l(event.date, format: "%b").upcase %></div>
+              </div>
+              <div>
+                <p class="fw-bold mb-0 small"><%= event.title %></p>
+                <p class="text-muted mb-0" style="font-size: 0.7rem"><%= event.category %></p>
+              </div>
+            </div>
+          <% end %>
+        <% end %>
+        <%= link_to "Ver todos →", events_path, class: "text-muted small" %>
+      <% else %>
+        <div class="border rounded-3 p-3 text-muted small">
+          Nenhum encontro novo na sua cidade esta semana.
+        </div>
+      <% end %>
+    </div>
+
+    <%# CTA criar encontro %>
+    <%= link_to new_event_path, class: "btn btn-dark w-100 mb-2" do %>
+      <i class="fa-solid fa-plus me-1"></i> Crie um encontro
     <% end %>
-  </div>
+    <%= link_to profile_path, class: "btn btn-outline-dark w-100" do %>
+      <i class="fa-solid fa-user me-1"></i> Ir para minha home
+    <% end %>
+
+  <% else %>
+    <p class="lead mb-3">Nunca mais deixe de viver algo incrível por falta de companhia.</p>
+    <p class="text-muted small mb-4">Disponível em: Rio de Janeiro, São Paulo e Belo Horizonte</p>
+    <%= link_to "Criar conta", new_user_registration_path, class: "btn btn-outline-dark w-100 mb-2" %>
+    <%= link_to "Entrar", new_user_session_path, class: "btn btn-outline-dark w-100 mb-4" %>
+    <%= link_to "Tem interesse em outras cidades?", new_city_interest_path, class: "text-muted small d-block mb-2" %>
+    <%= link_to "Saiba mais sobre o connecta", about_path, class: "text-muted small" %>
+  <% end %>
 </div>
+
+<% if user_signed_in? %>
+  <%= render "shared/footer_nav" %>
+<% end %>

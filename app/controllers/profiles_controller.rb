@@ -35,6 +35,14 @@ class ProfilesController < ApplicationController
 
     @nearby_events = scope.order(:date).limit(6)
     @my_events = current_user.events.order(:date)
+
+    reviewed_event_ids = current_user.reviews_given.pluck(:event_id)
+    @pending_reviews = current_user.attended_events
+                                   .where("date < ?", Date.today)
+                                   .where.not(user: current_user)
+                                   .where.not(id: reviewed_event_ids)
+                                   .order(:date)
+                                   .limit(3)
   end
 
   def edit
