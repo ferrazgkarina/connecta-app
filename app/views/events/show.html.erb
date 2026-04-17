@@ -1,8 +1,13 @@
 <div class="container py-4 pb-5" style="max-width: 480px">
 
-  <%= link_to profile_path, class: "text-muted small d-inline-block mb-3" do %>
-    <i class="fa-solid fa-arrow-left me-1"></i> Voltar
-  <% end %>
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <%= link_to profile_path, class: "text-muted small" do %>
+      <i class="fa-solid fa-arrow-left me-1"></i> Voltar
+    <% end %>
+    <button class="btn btn-sm btn-outline-dark" data-bs-toggle="modal" data-bs-target="#shareModal">
+      <i class="fa-solid fa-share-nodes me-1"></i> Compartilhar
+    </button>
+  </div>
 
   <%# Imagem de capa %>
   <div class="bg-secondary rounded-3 mb-3" style="height: 160px"></div>
@@ -10,8 +15,8 @@
   <%# Título e data %>
   <h1 class="fs-4 fw-bold mb-0"><%= @event.title %></h1>
   <p class="text-muted small mb-3">
-    <%= @event.date.strftime("%d/%m") %> de <%= @event.time.strftime("%H:%M") %>
-    <% if @event.duration.present? %> - <%= @event.duration %><% end %>
+    <%= @event.date.strftime("%d/%m") %> às <%= @event.time.strftime("%H:%M") %>
+    <% if @event.duration.present? %> - Duração <%= @event.duration %><% end %>
   </p>
 
   <div class="row g-3 mb-3">
@@ -27,7 +32,7 @@
         <p class="small mb-2"><strong>Custos:</strong><br><%= @event.costs %></p>
       <% end %>
       <% if @event.confirmation_deadline.present? %>
-        <p class="small mb-0"><strong>Importante:</strong><br><%= @event.confirmation_deadline %></p>
+        <p class="small mb-0"><strong>Prazo para confirmação:</strong><br><%= @event.confirmation_deadline %></p>
       <% end %>
     </div>
 
@@ -163,6 +168,34 @@
 
 <%= render "shared/footer_nav" %>
 
+<%# Modal de compartilhar %>
+<div class="modal fade" id="shareModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content border-0 rounded-4 p-4">
+      <div class="modal-body" data-controller="user-search">
+        <h5 class="fw-bold mb-1">Compartilhar encontro</h5>
+        <p class="text-muted small mb-3">Busque pelo nome ou @username da sua amiga.</p>
+        <%= form_with url: shares_path, method: :post, data: { turbo: false } do |f| %>
+          <%= hidden_field_tag :event_id, @event.id %>
+          <%= hidden_field_tag :username, nil, data: { user_search_target: "username" } %>
+
+          <input type="text"
+                 class="form-control mb-1"
+                 placeholder="Buscar por nome ou @username"
+                 autocomplete="off"
+                 data-user-search-target="input"
+                 data-action="input->user-search#search">
+
+          <div class="border rounded-3 mb-3 d-none" data-user-search-target="results"></div>
+
+          <%= f.submit "Compartilhar", class: "btn btn-dark w-100" %>
+        <% end %>
+        <button class="btn btn-link text-muted small w-100 mt-1" data-bs-dismiss="modal">Cancelar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
 <%# Modal da criadora %>
 <div class="modal fade" id="creatorModal" tabindex="-1" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
@@ -199,37 +232,27 @@
           <% end %>
         </div>
 
-        <%# Comentários das avaliações %>
-        <% comments = @creator_reviews.select { |r| r.comment.present? } %>
-        <% if comments.any? %>
-          <p class="small fw-bold mb-2">O que disseram:</p>
-          <% comments.first(3).each do |review| %>
-            <div class="bg-light rounded-3 p-2 mb-2">
-              <p class="small mb-1 fst-italic">"<%= review.comment %>"</p>
-              <p class="text-muted mb-0" style="font-size: 0.7rem">
-                <%= review.reviewer.profile&.username %> · <%= review.event.title %>
-              </p>
-            </div>
-          <% end %>
-        <% end %>
-
-        <%# Outros encontros %>
-        <% if @creator_events.any? %>
-          <p class="small fw-bold mt-3 mb-2">Outros encontros de <%= @creator.profile&.name&.split&.first %>:</p>
-          <% @creator_events.each do |event| %>
-            <%= link_to event_path(event), class: "text-decoration-none text-dark" do %>
-              <div class="d-flex align-items-center gap-2 border rounded-3 p-2 mb-2">
-                <div class="bg-dark text-white rounded-2 text-center flex-shrink-0 p-1" style="min-width: 38px; font-size: 0.65rem">
-                  <div class="fw-bold" style="font-size: 0.85rem"><%= event.date.strftime("%d") %></div>
-                  <div><%= I18n.l(event.date, format: "%b").upcase %></div>
+        <%# Avaliações com scroll %>
+        <% if @creator_reviews.any? %>
+          <p class="small fw-bold mb-2">O que disseram (<%= @creator_reviews.count %>):</p>
+          <div style="max-height: 220px; overflow-y: auto">
+            <% @creator_reviews.each do |review| %>
+              <div class="bg-light rounded-3 p-2 mb-2">
+                <div class="d-flex align-items-center justify-content-between mb-1">
+                  <span class="small fw-bold"><%= review.reviewer.profile&.username %></span>
+                  <span style="font-size: 0.8rem; color: #e74c3c"><% review.rating.times do %>♥<% end %></span>
                 </div>
-                <div>
-                  <p class="small fw-bold mb-0"><%= event.title %></p>
-                  <p class="text-muted mb-0" style="font-size: 0.7rem"><%= event.category %> · <%= event.city %></p>
-                </div>
+                <% if review.comment.present? %>
+                  <p class="small fst-italic mb-1">"<%= review.comment %>"</p>
+                <% end %>
+                <p class="text-muted mb-0" style="font-size: 0.7rem">
+                  <i class="fa-solid fa-calendar me-1"></i><%= review.event.title %>
+                </p>
               </div>
             <% end %>
-          <% end %>
+          </div>
+        <% else %>
+          <p class="text-muted small">Sem avaliações ainda.</p>
         <% end %>
 
         <%# CTAs %>

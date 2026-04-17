@@ -5,7 +5,7 @@ class Event < ApplicationRecord
   has_many :reviews, dependent: :destroy
 
   CATEGORIES = ["Cultura e arte", "Esporte", "Comer e beber", "Ao ar livre", "Música e dança", "Bem estar"].freeze
-  CONFIRMATION_DEADLINES = ["No mesmo dia", "1 dia antes", "3 dias antes", "1 semana antes"].freeze
+  CONFIRMATION_DEADLINES = ["Até 3 dias antes", "Até 24 horas antes", "Até 8 horas antes", "Até 4 horas antes"].freeze
 
   validates :title, :description, :category, :date, :time, presence: true
 end

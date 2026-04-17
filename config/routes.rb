@@ -4,6 +4,10 @@ Rails.application.routes.draw do
   }
   root to: "pages#home"
   resources :city_interests, only: [:new, :create]
+  get "/users/search", to: "users#search", as: :search_users
+  resources :shares, only: [:create] do
+    member { patch :mark_read }
+  end
 
   get "sobre", to: "pages#about", as: :about
 
@@ -14,6 +18,7 @@ Rails.application.routes.draw do
     resources :reviews, only: [:create, :new]
     collection do
       get :confirmed
+      get :past
     end
   end
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html

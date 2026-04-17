@@ -36,6 +36,8 @@ class ProfilesController < ApplicationController
     @nearby_events = scope.order(:date).limit(6)
     @my_events = current_user.events.order(:date)
 
+    @unread_shares = current_user.shares_received.where(read: false).includes(:sharer, :event)
+
     reviewed_event_ids = current_user.reviews_given.pluck(:event_id)
     @pending_reviews = current_user.attended_events
                                    .where("date < ?", Date.today)

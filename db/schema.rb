@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2026_04_14_135258) do
+ActiveRecord::Schema[7.1].define(version: 2026_04_17_092221) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -69,6 +69,7 @@ ActiveRecord::Schema[7.1].define(version: 2026_04_14_135258) do
     t.string "name"
     t.string "interests", default: [], array: true
     t.index ["user_id"], name: "index_profiles_on_user_id"
+    t.index ["username"], name: "index_profiles_on_username", unique: true
   end
 
   create_table "reviews", force: :cascade do |t|
@@ -82,6 +83,18 @@ ActiveRecord::Schema[7.1].define(version: 2026_04_14_135258) do
     t.index ["event_id"], name: "index_reviews_on_event_id"
     t.index ["reviewed_id"], name: "index_reviews_on_reviewed_id"
     t.index ["reviewer_id"], name: "index_reviews_on_reviewer_id"
+  end
+
+  create_table "shares", force: :cascade do |t|
+    t.bigint "sharer_id", null: false
+    t.bigint "recipient_id", null: false
+    t.bigint "event_id", null: false
+    t.boolean "read", default: false, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["event_id"], name: "index_shares_on_event_id"
+    t.index ["recipient_id"], name: "index_shares_on_recipient_id"
+    t.index ["sharer_id"], name: "index_shares_on_sharer_id"
   end
 
   create_table "users", force: :cascade do |t|
@@ -111,4 +124,7 @@ ActiveRecord::Schema[7.1].define(version: 2026_04_14_135258) do
   add_foreign_key "reviews", "events"
   add_foreign_key "reviews", "users", column: "reviewed_id"
   add_foreign_key "reviews", "users", column: "reviewer_id"
+  add_foreign_key "shares", "events"
+  add_foreign_key "shares", "users", column: "recipient_id"
+  add_foreign_key "shares", "users", column: "sharer_id"
 end

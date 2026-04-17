@@ -1,0 +1,53 @@
+<div class="container py-4 pb-5" style="max-width: 480px">
+
+  <% city = params[:city] || current_user.profile&.location %>
+  <%= link_to events_path(city: city), class: "text-muted small d-inline-block mb-3" do %>
+    <i class="fa-solid fa-arrow-left me-1"></i> Voltar
+  <% end %>
+
+  <h1 class="fs-4 fw-bold mb-1">Encontros anteriores</h1>
+  <p class="text-muted small mb-4">Inspire-se com o que já aconteceu<% if city.present? %> em <%= city %><% end %>.</p>
+
+  <%# Filtros de categoria %>
+  <div class="d-flex gap-2 overflow-auto pb-2 mb-4" style="scrollbar-width: none">
+    <%= link_to "Todos", past_events_path(city: city), class: "badge rounded-pill text-nowrap #{params[:category].blank? ? 'bg-dark' : 'bg-light text-dark border'}" %>
+    <% Event::CATEGORIES.each do |cat| %>
+      <%= link_to cat, past_events_path(city: city, category: cat), class: "badge rounded-pill text-nowrap #{params[:category] == cat ? 'bg-dark' : 'bg-light text-dark border'}" %>
+    <% end %>
+  </div>
+
+  <%# Grid de eventos %>
+  <% if @events.any? %>
+    <div class="row g-3">
+      <% @events.each do |event| %>
+        <div class="col-6">
+          <%= link_to event_path(event), class: "text-decoration-none text-dark" do %>
+            <div class="card border-0 shadow-sm rounded-3 h-100" style="opacity: 0.85">
+              <div class="bg-secondary rounded-top-3" style="height: 80px"></div>
+              <div class="card-body p-2">
+                <div class="bg-secondary text-white rounded-2 text-center p-1 mb-2 d-inline-block" style="font-size: 0.65rem; min-width: 36px">
+                  <div class="fw-bold" style="font-size: 0.85rem"><%= event.date.strftime("%d") %></div>
+                  <div><%= I18n.l(event.date, format: "%b").upcase %></div>
+                </div>
+                <p class="fw-bold mb-0 small lh-sm"><%= event.title %></p>
+                <p class="text-muted mb-0" style="font-size: 0.7rem"><%= event.user.profile&.username %> · <%= event.address %></p>
+                <% if event.reviews.any? %>
+                  <p class="mb-0 mt-1" style="font-size: 0.7rem; color: #e74c3c">
+                    <% event.reviews.average(:rating).round.times do %>♥<% end %>
+                  </p>
+                <% else %>
+                  <p class="small mb-0 mt-1 text-muted"><%= pluralize(event.attendances.count, "presença", "presenças") %></p>
+                <% end %>
+              </div>
+            </div>
+          <% end %>
+        </div>
+      <% end %>
+    </div>
+  <% else %>
+    <p class="text-muted text-center mt-5">Nenhum encontro anterior encontrado.</p>
+  <% end %>
+
+</div>
+
+<%= render "shared/footer_nav" %>

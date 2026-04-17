@@ -16,6 +16,26 @@
     </div>
   </div>
 
+  <%# Notificações de compartilhamento %>
+  <% if @unread_shares.any? %>
+    <div class="mb-4">
+      <% @unread_shares.each do |share| %>
+        <%= link_to mark_read_share_path(share), data: { turbo_method: :patch }, class: "text-decoration-none text-dark" do %>
+          <div class="d-flex align-items-center gap-3 border border-dark rounded-3 p-2 mb-2">
+            <i class="fa-solid fa-share-nodes text-dark fs-5"></i>
+            <div>
+              <p class="small fw-bold mb-0">
+                @<%= share.sharer.profile&.username %> compartilhou um encontro com você!
+              </p>
+              <p class="text-muted mb-0" style="font-size: 0.75rem"><%= share.event.title %></p>
+            </div>
+            <i class="fa-solid fa-chevron-right text-muted ms-auto"></i>
+          </div>
+        <% end %>
+      <% end %>
+    </div>
+  <% end %>
+
   <%# Encontros disponíveis %>
   <h2 class="fs-6 fw-bold mb-2">Encontros baseados nos seus interesses:</h2>
 

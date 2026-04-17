@@ -4,10 +4,18 @@ class EventsController < ApplicationController
 
   def index
     city = params[:city] || current_user.profile&.location
-    @events = Event.all
+    @events = Event.where("date >= ?", Date.today)
     @events = @events.where(city: city) if city.present?
     @events = @events.where(category: params[:category]) if params[:category].present?
     @events = @events.order(:date)
+  end
+
+  def past
+    city = params[:city] || current_user.profile&.location
+    @events = Event.where("date < ?", Date.today)
+    @events = @events.where(city: city) if city.present?
+    @events = @events.where(category: params[:category]) if params[:category].present?
+    @events = @events.order(date: :desc)
   end
 
   def confirmed
@@ -27,7 +35,7 @@ class EventsController < ApplicationController
     @can_review     = @event_ended && @attendance && @event.user != current_user && @user_review.nil?
 
     @creator         = @event.user
-    @creator_reviews = @creator.reviews_received.includes(:reviewer, :event).order(created_at: :desc)
+    @creator_reviews = @creator.reviews_received.includes(:reviewer, :event).order(rating: :desc)
     @creator_events  = @creator.events.where.not(id: @event.id).order(date: :desc).limit(4)
   end
 
