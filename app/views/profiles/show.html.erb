@@ -39,15 +39,6 @@
   <%# Encontros disponíveis %>
   <h2 class="fs-6 fw-bold mb-2">Encontros baseados nos seus interesses:</h2>
 
-  <%= form_with url: profile_path, method: :get, class: "mb-3" do |f| %>
-    <div class="input-group">
-      <%= f.date_field :date, value: params[:date], class: "form-control", placeholder: "Filtrar por data" %>
-      <% if params[:date].present? %>
-        <%= link_to "✕", profile_path, class: "btn btn-outline-secondary" %>
-      <% end %>
-    </div>
-  <% end %>
-
   <div class="d-flex gap-3 overflow-auto pb-2 mb-3">
     <% if @nearby_events.any? %>
       <% @nearby_events.each do |event| %>
@@ -107,6 +98,52 @@
   <%= render "shared/footer_nav" %>
 
 </div>
+
+<%# Modal de novas confirmações de presença %>
+<% if @unseen_attendances.any? %>
+  <div class="modal fade" id="attendanceModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content border-0 rounded-4 p-4">
+        <div class="modal-body">
+          <p class="text-center" style="font-size: 1.5rem">🎉</p>
+          <h5 class="fw-bold mb-1 text-center">Novas confirmações!</h5>
+          <p class="text-muted small text-center mb-4">Alguém vai junto com você.</p>
+
+          <% @unseen_attendances.each do |attendance| %>
+            <div class="d-flex align-items-center gap-3 mb-3">
+              <div class="rounded-circle bg-secondary flex-shrink-0" style="width: 36px; height: 36px;"></div>
+              <div class="flex-grow-1">
+                <p class="small fw-bold mb-0">
+                  @<%= attendance.user.profile&.username || attendance.user.email.split("@").first %>
+                  confirmou presença em <em><%= attendance.event.title %></em>
+                </p>
+                <p class="text-muted mb-0" style="font-size: 0.72rem">Diga oi no chat do encontro!</p>
+              </div>
+              <%= link_to event_path(attendance.event), class: "btn btn-sm btn-outline-dark flex-shrink-0" do %>
+                <i class="fa-solid fa-message"></i>
+              <% end %>
+            </div>
+          <% end %>
+
+          <button class="btn btn-dark w-100 mt-2" data-bs-dismiss="modal">Entendido!</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    document.addEventListener("turbo:load", function () {
+      var modal = new bootstrap.Modal(document.getElementById("attendanceModal"), { backdrop: true });
+      modal.show();
+      document.getElementById("attendanceModal").addEventListener("hidden.bs.modal", function () {
+        fetch("<%= mark_seen_attendances_path %>", {
+          method: "POST",
+          headers: { "X-CSRF-Token": document.querySelector('meta[name="csrf-token"]').content }
+        });
+      });
+    });
+  </script>
+<% end %>
 
 <%# Popup de reviews pendentes %>
 <% if @pending_reviews.any? %>

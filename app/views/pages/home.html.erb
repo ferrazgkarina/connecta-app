@@ -60,8 +60,12 @@
     <%= link_to new_event_path, class: "btn btn-dark w-100 mb-2" do %>
       <i class="fa-solid fa-plus me-1"></i> Crie um encontro
     <% end %>
-    <%= link_to profile_path, class: "btn btn-outline-dark w-100" do %>
+    <%= link_to profile_path, class: "btn btn-outline-dark w-100 mb-4" do %>
       <i class="fa-solid fa-user me-1"></i> Ir para minha home
+    <% end %>
+
+    <%= button_to destroy_user_session_path, method: :delete, class: "btn btn-link text-muted small w-100" do %>
+      <i class="fa-solid fa-right-from-bracket me-1"></i> Sair da conta
     <% end %>
 
   <% else %>

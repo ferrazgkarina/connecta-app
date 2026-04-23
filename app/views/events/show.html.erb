@@ -1,3 +1,5 @@
+<meta name="turbo-cache-control" content="no-cache">
+
 <div class="container py-4 pb-5" style="max-width: 480px">
 
   <div class="d-flex justify-content-between align-items-center mb-3">
@@ -72,15 +74,44 @@
   </div>
 
   <%# Chat do encontro %>
-  <div class="border rounded-3 p-3 mb-3">
+  <div class="border rounded-3 p-3 mb-3"
+       data-controller="chat"
+       data-chat-event-id-value="<%= @event.id %>"
+       data-chat-current-username-value="<%= current_user.profile&.username %>"
+       data-url="<%= event_messages_path(@event) %>">
     <p class="small fw-bold mb-2">Chat do encontro</p>
-    <div style="min-height: 80px; max-height: 200px; overflow-y: auto;" class="mb-2">
-      <p class="text-muted small text-center mt-3">Nenhuma mensagem ainda.</p>
+    <div data-chat-target="messages"
+         style="min-height: 80px; max-height: 250px; overflow-y: auto;"
+         class="mb-2">
+      <% if @event.messages.any? %>
+        <% @event.messages.includes(:user).order(:created_at).each do |msg| %>
+          <% is_own = msg.user == current_user %>
+          <div class="d-flex mb-2 <%= is_own ? 'justify-content-end' : 'justify-content-start' %>">
+            <div style="max-width: 75%">
+              <% unless is_own %>
+                <p class="text-muted mb-1" style="font-size: 0.7rem">@<%= msg.user.profile&.username %></p>
+              <% end %>
+              <div class="rounded-3 px-3 py-2 <%= is_own ? 'bg-dark text-white' : 'bg-light' %>">
+                <p class="mb-0 small"><%= msg.content %></p>
+              </div>
+              <p class="text-muted mt-1 <%= is_own ? 'text-end' : '' %>" style="font-size: 0.65rem">
+                <%= msg.created_at.strftime("%H:%M") %>
+              </p>
+            </div>
+          </div>
+        <% end %>
+      <% else %>
+        <p class="text-muted small text-center mt-3">Nenhuma mensagem ainda. Seja a primeira!</p>
+      <% end %>
     </div>
-    <div class="d-flex gap-2">
-      <input type="text" class="form-control form-control-sm" placeholder="Escreva uma mensagem...">
+    <form data-action="submit->chat#send" class="d-flex gap-2">
+      <input data-chat-target="input"
+             type="text"
+             class="form-control form-control-sm"
+             placeholder="Escreva uma mensagem..."
+             autocomplete="off">
       <button class="btn btn-dark btn-sm">Enviar</button>
-    </div>
+    </form>
   </div>
 
   <%# Botão participar/cancelar ou editar/cancelar para a criadora %>

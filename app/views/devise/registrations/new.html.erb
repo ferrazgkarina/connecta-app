@@ -9,12 +9,23 @@
     <%= render "devise/shared/error_messages", resource: resource %>
 
     <%= simple_form_for(resource, as: resource_name, url: registration_path(resource_name)) do |f| %>
-      <%= f.input :email,
-                  label: false,
-                  placeholder: "Email ou telefone",
-                  required: true,
-                  autofocus: true,
-                  input_html: { autocomplete: "email", class: "form-control mb-2" } %>
+      <div data-controller="email-check">
+        <%= f.input :email,
+                    label: false,
+                    placeholder: "Email",
+                    required: true,
+                    autofocus: true,
+                    input_html: {
+                      autocomplete: "email",
+                      class: "form-control mb-1",
+                      data: {
+                        email_check_target: "input",
+                        action: "input->email-check#check"
+                      }
+                    } %>
+        <p data-email-check-target="feedback" class="mb-2" style="font-size: 0.8rem"></p>
+      </div>
+
       <%= f.input :password,
                   label: false,
                   placeholder: "Senha",

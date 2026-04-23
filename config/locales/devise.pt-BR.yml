@@ -1,0 +1,57 @@
+pt-BR:
+  devise:
+    confirmations:
+      confirmed: "Sua conta foi confirmada com sucesso. Seja bem-vinda!"
+      send_instructions: "Você vai receber um email com instruções para confirmar sua conta em alguns minutos."
+    failure:
+      already_authenticated: "Você já está conectada."
+      inactive: "Sua conta ainda não foi ativada."
+      invalid: "Email ou senha incorretos. Tenta de novo?"
+      locked: "Sua conta está bloqueada."
+      last_attempt: "Mais uma tentativa antes de sua conta ser bloqueada."
+      not_found_in_database: "Email ou senha incorretos. Tenta de novo?"
+      timeout: "Sua sessão expirou. Entre novamente para continuar."
+      unauthenticated: "Entre na sua conta para continuar."
+      unconfirmed: "Confirme seu email antes de continuar."
+    passwords:
+      no_token: "Você não pode acessar essa página sem um link de recuperação de senha."
+      send_instructions: "Se esse email estiver cadastrado, você vai receber as instruções em breve."
+      send_paranoid_instructions: "Se esse email estiver cadastrado, você vai receber as instruções em breve."
+      updated: "Senha alterada com sucesso! Seja bem-vinda de volta."
+      updated_not_active: "Sua senha foi alterada com sucesso."
+    registrations:
+      destroyed: "Sua conta foi cancelada. Esperamos te ver por aqui de novo!"
+      signed_up: "Bem-vinda ao Connecta! Conta criada com sucesso."
+      signed_up_but_inactive: "Conta criada! Mas precisamos ativar ela primeiro."
+      signed_up_but_locked: "Conta criada, mas ela está bloqueada por enquanto."
+      update_needs_confirmation: "Conta atualizada! Confirme seu novo email para finalizar."
+      updated: "Sua conta foi atualizada com sucesso."
+      updated_but_not_signed_in: "Conta atualizada! Como você mudou a senha, entre novamente."
+    sessions:
+      signed_in: "Bem-vinda de volta!"
+      signed_out: "Até logo!"
+      already_signed_out: "Até logo!"
+    unlocks:
+      unlocked: "Sua conta foi desbloqueada. Entre para continuar."
+  activerecord:
+    errors:
+      models:
+        user:
+          attributes:
+            email:
+              taken: "esse email já está em uso. Já tem uma conta aqui?"
+              blank: "não pode ficar em branco"
+              invalid: "parece inválido, confere aí?"
+            password:
+              blank: "não pode ficar em branco"
+              too_short: "muito curta — precisa ter pelo menos %{count} caracteres"
+            password_confirmation:
+              confirmation: "as senhas não coincidem"
+  errors:
+    messages:
+      already_confirmed: "já foi confirmado, tente entrar na sua conta"
+      not_found: "não encontrado"
+      not_locked: "não estava bloqueado"
+      not_saved:
+        one: "Ops! Tem algo errado:"
+        other: "Ops! Tem %{count} coisinhas pra corrigir:"

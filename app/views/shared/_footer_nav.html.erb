@@ -1,19 +1,42 @@
-<nav class="fixed-bottom border-top bg-white py-2">
-  <div class="container d-flex justify-content-around" style="max-width: 480px">
-    <%= link_to new_event_path, class: "text-dark" do %>
-      <i class="fa-solid fa-circle-plus fs-5"></i>
+<nav class="fixed-bottom bg-white border-top" style="padding-bottom: env(safe-area-inset-bottom)">
+  <div class="container d-flex justify-content-around align-items-center" style="max-width: 480px; height: 60px; position: relative;">
+
+    <%# Esquerda: Home %>
+    <%= link_to root_path, class: "text-dark d-flex flex-column align-items-center gap-1 text-decoration-none" do %>
+      <i class="fa-solid fa-house" style="font-size: 1.1rem"></i>
+      <span style="font-size: 0.6rem">Home</span>
     <% end %>
-    <%= link_to "#", class: "text-dark" do %>
-      <i class="fa-solid fa-message fs-5"></i>
+
+    <%# Mensagens %>
+    <%= link_to chats_path, class: "text-dark d-flex flex-column align-items-center gap-1 text-decoration-none position-relative" do %>
+      <i class="fa-regular fa-comment-dots" style="font-size: 1.1rem"></i>
+      <span style="font-size: 0.6rem">Mensagens</span>
+      <% if @unread_messages_count&.> 0 %>
+        <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" style="font-size: 0.5rem">
+          <%= @unread_messages_count > 9 ? "9+" : @unread_messages_count %>
+        </span>
+      <% end %>
     <% end %>
-    <%= link_to confirmed_events_path, class: "text-dark" do %>
-      <i class="fa-solid fa-calendar fs-5"></i>
+
+    <%# Centro: botão criar elevado %>
+    <div style="position: relative; width: 56px; display: flex; justify-content: center;">
+      <%= link_to new_event_path, class: "d-flex align-items-center justify-content-center bg-dark text-white rounded-circle text-decoration-none shadow",
+          style: "width: 56px; height: 56px; position: absolute; bottom: 8px;" do %>
+        <i class="fa-solid fa-plus" style="font-size: 1.3rem"></i>
+      <% end %>
+    </div>
+
+    <%# Agenda %>
+    <%= link_to confirmed_events_path, class: "text-dark d-flex flex-column align-items-center gap-1 text-decoration-none" do %>
+      <i class="fa-regular fa-calendar" style="font-size: 1.1rem"></i>
+      <span style="font-size: 0.6rem">Agenda</span>
     <% end %>
-    <%= link_to profile_path, class: "text-dark" do %>
-      <i class="fa-solid fa-user fs-5"></i>
+
+    <%# Perfil %>
+    <%= link_to profile_path, class: "text-dark d-flex flex-column align-items-center gap-1 text-decoration-none" do %>
+      <i class="fa-regular fa-user" style="font-size: 1.1rem"></i>
+      <span style="font-size: 0.6rem">Perfil</span>
     <% end %>
-    <%= link_to edit_profile_path, class: "text-dark" do %>
-      <i class="fa-solid fa-gear fs-5"></i>
-    <% end %>
+
   </div>
 </nav>

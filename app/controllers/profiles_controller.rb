@@ -38,6 +38,14 @@ class ProfilesController < ApplicationController
 
     @unread_shares = current_user.shares_received.where(read: false).includes(:sharer, :event)
 
+    @unseen_attendances = Attendance.joins(:event, :user)
+                                    .where(events: { user: current_user })
+                                    .where(seen_by_creator: false)
+                                    .where.not(user: current_user)
+                                    .includes(:user => :profile, :event => {})
+                                    .order(created_at: :desc)
+                                    .limit(5)
+
     reviewed_event_ids = current_user.reviews_given.pluck(:event_id)
     @pending_reviews = current_user.attended_events
                                    .where("date < ?", Date.today)

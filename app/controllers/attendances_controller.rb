@@ -1,6 +1,6 @@
 class AttendancesController < ApplicationController
   before_action :authenticate_user!
-  before_action :set_event
+  before_action :set_event, only: [:create, :destroy]
 
   def create
     @attendance = @event.attendances.build(user: current_user)
@@ -15,6 +15,14 @@ class AttendancesController < ApplicationController
     @attendance = @event.attendances.find(params[:id])
     @attendance.destroy
     redirect_to @event, notice: "Participação cancelada."
+  end
+
+  def mark_seen
+    Attendance.joins(:event)
+              .where(events: { user: current_user })
+              .where(seen_by_creator: false)
+              .update_all(seen_by_creator: true)
+    head :ok
   end
 
   private
