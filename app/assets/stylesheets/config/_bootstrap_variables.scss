@@ -8,21 +8,52 @@
 $font-family-sans-serif: $body-font;
 $headings-font-family:   $headers-font;
 $body-bg:                $light-gray;
+$body-color:             $gray-dark;
 $font-size-base:         1rem;
 
 // Colors
-$body-color: $gray;
-$primary:    $blue;
+$primary:    $black;
+$secondary:  $gray;
 $success:    $green;
 $info:       $yellow;
 $danger:     $red;
 $warning:    $orange;
+$light:      $gray-light;
+$dark:       $black;
 
-// Buttons & inputs' radius
-$border-radius-sm:            .0625rem;
-$border-radius:               .125rem;
-$border-radius-lg:            .25rem;
-$border-radius-xl:            .5rem;
-$border-radius-xxl:           1rem;
+// Bordas arredondadas (8px como padrão)
+$border-radius-sm:   4px;
+$border-radius:      8px;
+$border-radius-lg:   12px;
+$border-radius-xl:   16px;
+$border-radius-xxl:  24px;
+$border-color:       $gray-light;
+
+// Sombras suaves
+$box-shadow-sm:  0 1px 4px rgba(0, 0, 0, 0.06);
+$box-shadow:     0 2px 12px rgba(0, 0, 0, 0.08);
+$box-shadow-lg:  0 4px 24px rgba(0, 0, 0, 0.10);
+
+// Inputs
+$input-border-color:        $gray-light;
+$input-focus-border-color:  $black;
+$input-border-radius:       8px;
+$input-bg:                  $white;
+$input-padding-y:           0.6rem;
+$input-padding-x:           0.9rem;
+
+// Botões
+$btn-border-radius:     8px;
+$btn-border-radius-sm:  6px;
+$btn-border-radius-lg:  12px;
+$btn-padding-y:         0.55rem;
+$btn-padding-x:         1.2rem;
+$btn-font-family:       $headers-font;
+$btn-font-weight:       600;
+
+// Cards
+$card-border-radius:    8px;
+$card-border-color:     $gray-light;
+$card-box-shadow:       $box-shadow-sm;
 
 // Override other variables below!

@@ -74,36 +74,66 @@
   </div>
 
   <%# Chat do encontro %>
+  <% last_msg = @event.messages.includes(:user).order(:created_at).last %>
+  <% total_msgs = @event.messages.count %>
   <div class="border rounded-3 p-3 mb-3"
        data-controller="chat"
        data-chat-event-id-value="<%= @event.id %>"
        data-chat-current-username-value="<%= current_user.profile&.username %>"
        data-url="<%= event_messages_path(@event) %>">
-    <p class="small fw-bold mb-2">Chat do encontro</p>
-    <div data-chat-target="messages"
-         style="min-height: 80px; max-height: 250px; overflow-y: auto;"
-         class="mb-2">
-      <% if @event.messages.any? %>
-        <% @event.messages.includes(:user).order(:created_at).each do |msg| %>
-          <% is_own = msg.user == current_user %>
-          <div class="d-flex mb-2 <%= is_own ? 'justify-content-end' : 'justify-content-start' %>">
-            <div style="max-width: 75%">
-              <% unless is_own %>
-                <p class="text-muted mb-1" style="font-size: 0.7rem">@<%= msg.user.profile&.username %></p>
-              <% end %>
-              <div class="rounded-3 px-3 py-2 <%= is_own ? 'bg-dark text-white' : 'bg-light' %>">
-                <p class="mb-0 small"><%= msg.content %></p>
-              </div>
-              <p class="text-muted mt-1 <%= is_own ? 'text-end' : '' %>" style="font-size: 0.65rem">
-                <%= msg.created_at.strftime("%H:%M") %>
-              </p>
-            </div>
-          </div>
-        <% end %>
-      <% else %>
-        <p class="text-muted small text-center mt-3">Nenhuma mensagem ainda. Seja a primeira!</p>
+
+    <%# Header com toggle %>
+    <div class="d-flex justify-content-between align-items-center mb-2">
+      <p class="small fw-bold mb-0">Chat do encontro</p>
+      <% if total_msgs > 1 %>
+        <button class="btn btn-link text-muted p-0"
+                style="font-size: 0.75rem"
+                onclick="this.closest('[data-controller=chat]').querySelector('[data-chat-target=messages]').classList.toggle('d-none'); this.textContent = this.textContent.includes('Ver') ? 'Fechar' : 'Ver todas (<%= total_msgs %>)'">
+          Ver todas (<%= total_msgs %>)
+        </button>
       <% end %>
     </div>
+
+    <%# Última mensagem sempre visível %>
+    <% if last_msg %>
+      <% is_own = last_msg.user == current_user %>
+      <div class="d-flex mb-2 <%= is_own ? 'justify-content-end' : 'justify-content-start' %>">
+        <div style="max-width: 75%">
+          <% unless is_own %>
+            <p class="text-muted mb-1" style="font-size: 0.7rem">@<%= last_msg.user.profile&.username %></p>
+          <% end %>
+          <div class="rounded-3 px-3 py-2 <%= is_own ? 'bg-dark text-white' : 'bg-light' %>">
+            <p class="mb-0 small"><%= last_msg.content %></p>
+          </div>
+          <p class="text-muted mt-1 <%= is_own ? 'text-end' : '' %>" style="font-size: 0.65rem">
+            <%= last_msg.created_at.strftime("%H:%M") %>
+          </p>
+        </div>
+      </div>
+    <% else %>
+      <p class="text-muted small text-center mt-2 mb-2">Nenhuma mensagem ainda. Seja a primeira!</p>
+    <% end %>
+
+    <%# Histórico completo — oculto por padrão %>
+    <div data-chat-target="messages" class="d-none mb-2" style="max-height: 250px; overflow-y: auto;">
+      <% @event.messages.includes(:user).order(:created_at).each do |msg| %>
+        <% is_own = msg.user == current_user %>
+        <div class="d-flex mb-2 <%= is_own ? 'justify-content-end' : 'justify-content-start' %>">
+          <div style="max-width: 75%">
+            <% unless is_own %>
+              <p class="text-muted mb-1" style="font-size: 0.7rem">@<%= msg.user.profile&.username %></p>
+            <% end %>
+            <div class="rounded-3 px-3 py-2 <%= is_own ? 'bg-dark text-white' : 'bg-light' %>">
+              <p class="mb-0 small"><%= msg.content %></p>
+            </div>
+            <p class="text-muted mt-1 <%= is_own ? 'text-end' : '' %>" style="font-size: 0.65rem">
+              <%= msg.created_at.strftime("%H:%M") %>
+            </p>
+          </div>
+        </div>
+      <% end %>
+    </div>
+
     <form data-action="submit->chat#send" class="d-flex gap-2">
       <input data-chat-target="input"
              type="text"
@@ -116,12 +146,16 @@
 
   <%# Botão participar/cancelar ou editar/cancelar para a criadora %>
   <% if @event.user == current_user %>
+    <% count = @event.attendances.count %>
+    <% confirm_msg = count > 0 ? "#{count} #{count == 1 ? 'pessoa confirmou' : 'pessoas confirmaram'} presença. Tem certeza que deseja cancelar este encontro?" : "Tem certeza que deseja cancelar este encontro?" %>
     <div class="d-flex gap-2 mb-4">
-      <%= link_to "Editar encontro", edit_event_path(@event), class: "btn btn-outline-dark w-50" %>
-      <% count = @event.attendances.count %>
-      <% confirm_msg = count > 0 ? "#{count} #{count == 1 ? 'pessoa confirmou' : 'pessoas confirmaram'} presença. Tem certeza que deseja cancelar este encontro?" : "Tem certeza que deseja cancelar este encontro?" %>
+      <%= link_to "Editar encontro", edit_event_path(@event),
+          class: "btn btn-outline-dark",
+          style: "flex: 1" %>
       <%= button_to "Cancelar encontro", event_path(@event), method: :delete,
-          class: "btn btn-outline-danger w-50",
+          form: { style: "flex: 1" },
+          class: "btn w-100",
+          style: "border: 1px solid #e74c3c; color: #e74c3c; background: white;",
           data: { turbo_confirm: confirm_msg } %>
     </div>
   <% elsif @attendance %>

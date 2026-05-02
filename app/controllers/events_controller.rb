@@ -28,7 +28,7 @@ class EventsController < ApplicationController
 
   def show
     @attendance     = @event.attendances.find_by(user: current_user)
-    @related_events = Event.where(category: @event.category).where.not(id: @event.id).limit(4)
+    @related_events = Event.where(category: @event.category, city: @event.city).where.not(id: @event.id).where("date >= ?", Date.today).limit(4)
     @reviews        = @event.reviews.includes(:reviewer)
     @user_review    = @reviews.find_by(reviewer: current_user)
     @event_ended    = @event.date < Date.today
@@ -45,6 +45,7 @@ class EventsController < ApplicationController
 
   def create
     @event = current_user.events.build(event_params)
+    @event.time = merge_time(params[:event][:time], params[:event][:time_minutes])
     if @event.save
       redirect_to @event, notice: "Encontro criado com sucesso!"
     else
@@ -56,7 +57,8 @@ class EventsController < ApplicationController
   end
 
   def update
-    if @event.update(event_params)
+    merged = event_params.merge(time: merge_time(params[:event][:time], params[:event][:time_minutes]))
+    if @event.update(merged)
       redirect_to @event, notice: "Encontro atualizado!"
     else
       render :edit, status: :unprocessable_entity
@@ -76,5 +78,12 @@ class EventsController < ApplicationController
 
   def event_params
     params.require(:event).permit(:title, :description, :category, :date, :time, :duration, :address, :city, :costs, :confirmation_deadline)
+  end
+
+  def merge_time(hour_field, minutes_field)
+    return nil if hour_field.blank?
+    hour = hour_field.split(":").first.rjust(2, "0")
+    min  = minutes_field.presence || "00"
+    "#{hour}:#{min}"
   end
 end

@@ -1,7 +1,7 @@
 class Profile < ApplicationRecord
   belongs_to :user
 
-  CITIES = ["Rio de Janeiro", "São Paulo", "Belo Horizonte"].freeze
+  CITIES = ["Rio de Janeiro", "São Paulo", "Belo Horizonte", "Capadócia"].freeze
   INTERESTS = ["Cultura e arte", "Esportes", "Comer e beber", "Ao ar livre", "Música e dança", "Bem estar"].freeze
 
   validates :name, :username, :location, presence: true

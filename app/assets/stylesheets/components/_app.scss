@@ -1,0 +1,173 @@
+// ─── Tipografia global ───────────────────────────────────────────────────────
+
+body {
+  font-family: $body-font;
+  background-color: $light-gray;
+  color: $gray-dark;
+  -webkit-font-smoothing: antialiased;
+}
+
+h1, h2, h3, h4, h5, h6,
+.fw-bold, .btn {
+  font-family: $headers-font;
+}
+
+// Nome do app / logo textual
+.brand-name {
+  font-family: $brand-font;
+  font-weight: 700;
+  letter-spacing: -0.5px;
+  color: $black;
+}
+
+// ─── Cards ───────────────────────────────────────────────────────────────────
+
+.card {
+  border: 1px solid $gray-light;
+  border-radius: 8px;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+  background: $white;
+}
+
+// card de evento (horizontal com data)
+.event-card {
+  background: $white;
+  border: 1px solid $gray-light;
+  border-radius: 8px;
+  box-shadow: 0 1px 6px rgba(0, 0, 0, 0.06);
+  transition: box-shadow 0.15s ease;
+
+  &:hover {
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.10);
+  }
+}
+
+// ─── Botões ──────────────────────────────────────────────────────────────────
+
+.btn {
+  letter-spacing: 0.01em;
+}
+
+.btn-dark {
+  background-color: $black;
+  border-color: $black;
+
+  &:hover {
+    background-color: $gray-dark;
+    border-color: $gray-dark;
+  }
+}
+
+.btn-outline-dark {
+  background-color: $white;
+  border-color: $gray-light;
+  color: $black;
+
+  &:hover {
+    background-color: $black;
+    border-color: $black;
+    color: $white;
+  }
+}
+
+// ─── Inputs ──────────────────────────────────────────────────────────────────
+
+.form-control,
+.form-select,
+input,
+select,
+textarea {
+  font-family: $ui-font !important;
+  font-size: 0.9rem;
+  border-color: $gray-light;
+  border-radius: 8px;
+  background-color: $white;
+  color: $gray-dark;
+
+  &:focus {
+    border-color: $black;
+    box-shadow: 0 0 0 3px rgba(26, 26, 26, 0.08);
+  }
+
+  &::placeholder {
+    font-family: $ui-font;
+    color: $gray-mid;
+    font-weight: 300;
+  }
+}
+
+// ─── Badges de data (mini calendário nos cards) ───────────────────────────────
+
+.date-badge {
+  background-color: $black;
+  color: $white;
+  border-radius: 6px;
+  text-align: center;
+  padding: 4px 6px;
+  min-width: 38px;
+  font-family: $headers-font;
+
+  .date-day   { font-size: 1rem; font-weight: 700; line-height: 1; }
+  .date-month { font-size: 0.6rem; text-transform: uppercase; letter-spacing: 0.05em; }
+}
+
+// ─── Footer nav ──────────────────────────────────────────────────────────────
+
+.footer-nav {
+  background: $white;
+  border-top: 1px solid $gray-light;
+  box-shadow: 0 -2px 12px rgba(0, 0, 0, 0.05);
+
+  .nav-icon {
+    color: $gray-mid;
+    font-size: 1.1rem;
+    transition: color 0.15s;
+
+    &.active, &:hover { color: $black; }
+  }
+
+  .create-btn {
+    background: $black;
+    color: $white;
+    border-radius: 50%;
+    width: 56px;
+    height: 56px;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+    transition: transform 0.15s, box-shadow 0.15s;
+
+    &:hover {
+      transform: scale(1.08);
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.25);
+    }
+  }
+}
+
+// ─── Modais ──────────────────────────────────────────────────────────────────
+
+.modal-content {
+  border-radius: 16px;
+  border: none;
+  box-shadow: 0 8px 40px rgba(0, 0, 0, 0.12);
+}
+
+// ─── Página de login / cadastro ───────────────────────────────────────────────
+
+.auth-page {
+  background: $white;
+  min-height: 100vh;
+
+  .auth-title {
+    font-family: $brand-font;
+    font-size: 2rem;
+    font-weight: 700;
+    color: $black;
+  }
+}
+
+// ─── Utilitários ─────────────────────────────────────────────────────────────
+
+.text-muted { color: $gray !important; }
+.bg-light   { background-color: $light-gray !important; }
+
+.rounded-app { border-radius: 8px !important; }
+.shadow-app  { box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08) !important; }

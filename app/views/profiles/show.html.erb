@@ -1,19 +1,21 @@
 <div class="container py-4" style="max-width: 480px">
 
-  <%# Header: saudação + perfil %>
+  <%# Header %>
   <div class="d-flex justify-content-between align-items-center mb-4">
     <div>
       <h1 class="fs-4 fw-bold mb-0">Olá, <%= @profile.name || @profile.username %>!</h1>
-      <%= link_to edit_profile_path, class: "small text-decoration-underline text-muted" do %>
-        <i class="fa-solid fa-location-dot"></i> <%= @profile.location %>
-        <i class="fa-solid fa-pen fa-xs ms-1"></i>
-      <% end %>
+      <p class="text-muted small mb-0">
+        <i class="fa-solid fa-location-dot me-1"></i><%= @profile.location %>
+      </p>
     </div>
-    <div class="rounded-circle bg-secondary" style="width: 56px; height: 56px; overflow: hidden;">
-      <% if @profile.picture.present? %>
-        <img src="<%= @profile.picture %>" alt="Foto de perfil" class="w-100 h-100" style="object-fit: cover;">
-      <% end %>
-    </div>
+    <%= link_to edit_profile_path, class: "text-muted text-decoration-none d-flex flex-column align-items-center gap-1" do %>
+      <div class="rounded-circle bg-secondary" style="width: 44px; height: 44px; overflow: hidden;">
+        <% if @profile.picture.present? %>
+          <img src="<%= @profile.picture %>" alt="Foto de perfil" class="w-100 h-100" style="object-fit: cover;">
+        <% end %>
+      </div>
+      <span style="font-size: 0.6rem"><%= @profile.username %></span>
+    <% end %>
   </div>
 
   <%# Notificações de compartilhamento %>
@@ -62,10 +64,8 @@
     <% end %>
   </div>
 
-  <%= link_to "Veja todos os encontros em #{@profile.location}", events_path(city: @profile.location), class: "btn btn-outline-dark w-100 mb-4" %>
-
-  <%# CTA criar encontro %>
-  <p class="text-center small mb-2">Não achou o que procura?</p>
+  <%= link_to "Veja todos os encontros em #{@profile.location}", events_path(city: @profile.location), class: "btn btn-outline-dark w-100 mb-2" %>
+  <p class="text-center text-muted small mb-2">Não achou o que procura?</p>
   <%= link_to "Crie o seu encontro", new_event_path, class: "btn btn-outline-dark w-100 mb-4" %>
 
   <%# Meus encontros %>

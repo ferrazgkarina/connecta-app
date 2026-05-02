@@ -29,12 +29,11 @@ class ProfilesController < ApplicationController
     interests = current_user.profile&.interests&.compact_blank || []
     city = current_user.profile&.location
 
-    scope = Event.where.not(user: current_user).where(city: city)
+    scope = Event.where.not(user: current_user).where(city: city).where("date >= ?", Date.today)
     scope = scope.where(category: interests) if interests.any?
-    scope = scope.where("date >= ?", params[:date]) if params[:date].present?
 
     @nearby_events = scope.order(:date).limit(6)
-    @my_events = current_user.events.order(:date)
+    @my_events = current_user.events.where("date >= ?", Date.today).order(:date)
 
     @unread_shares = current_user.shares_received.where(read: false).includes(:sharer, :event)
 

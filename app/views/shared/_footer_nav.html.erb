@@ -1,21 +1,16 @@
 <nav class="fixed-bottom bg-white border-top" style="padding-bottom: env(safe-area-inset-bottom)">
   <div class="container d-flex justify-content-around align-items-center" style="max-width: 480px; height: 60px; position: relative;">
 
-    <%# Esquerda: Home %>
+    <%# Home %>
     <%= link_to root_path, class: "text-dark d-flex flex-column align-items-center gap-1 text-decoration-none" do %>
       <i class="fa-solid fa-house" style="font-size: 1.1rem"></i>
       <span style="font-size: 0.6rem">Home</span>
     <% end %>
 
-    <%# Mensagens %>
-    <%= link_to chats_path, class: "text-dark d-flex flex-column align-items-center gap-1 text-decoration-none position-relative" do %>
-      <i class="fa-regular fa-comment-dots" style="font-size: 1.1rem"></i>
-      <span style="font-size: 0.6rem">Mensagens</span>
-      <% if @unread_messages_count&.> 0 %>
-        <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" style="font-size: 0.5rem">
-          <%= @unread_messages_count > 9 ? "9+" : @unread_messages_count %>
-        </span>
-      <% end %>
+    <%# Encontros %>
+    <%= link_to profile_path, class: "text-dark d-flex flex-column align-items-center gap-1 text-decoration-none" do %>
+      <i class="fa-regular fa-compass" style="font-size: 1.1rem"></i>
+      <span style="font-size: 0.6rem">Encontros</span>
     <% end %>
 
     <%# Centro: botão criar elevado %>
@@ -32,10 +27,15 @@
       <span style="font-size: 0.6rem">Agenda</span>
     <% end %>
 
-    <%# Perfil %>
-    <%= link_to profile_path, class: "text-dark d-flex flex-column align-items-center gap-1 text-decoration-none" do %>
-      <i class="fa-regular fa-user" style="font-size: 1.1rem"></i>
-      <span style="font-size: 0.6rem">Perfil</span>
+    <%# Mensagens %>
+    <%= link_to chats_path, class: "text-dark d-flex flex-column align-items-center gap-1 text-decoration-none position-relative" do %>
+      <i class="fa-regular fa-comment-dots" style="font-size: 1.1rem"></i>
+      <span style="font-size: 0.6rem">Mensagens</span>
+      <% if @unread_messages_count&.> 0 %>
+        <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" style="font-size: 0.5rem">
+          <%= @unread_messages_count > 9 ? "9+" : @unread_messages_count %>
+        </span>
+      <% end %>
     <% end %>
 
   </div>
